@@ -34,17 +34,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvPassword = findViewById(R.id.textViewPassword);
         tvEmail = findViewById(R.id.textViewEmail);
 
-//        loginUsername.setVisibility(View.GONE);
-//        loginPassword.setVisibility(View.GONE);
-//        secondRegister.setVisibility(View.GONE);
-//        secondLogin.setVisibility(View.GONE);
-//        registerEmail.setVisibility(View.GONE);
-//        registerPassword.setVisibility(View.GONE);
-//        registerUsername.setVisibility(View.GONE);
-//        tvEmail.setVisibility(View.GONE);
-//        tvUsername.setVisibility(View.GONE);
-//        tvPassword.setVisibility(View.GONE);
-
         firstLogin.setOnClickListener(this);
         secondLogin.setOnClickListener(this);
         firstRegister.setOnClickListener(this);
@@ -79,9 +68,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String password = loginPassword.getText().toString();
 
             if(username.equals("admin") && password.equals("admin")){
-                //prelazak na sledeci activity
+                //intent za naredni activity
                 Intent intent = new Intent(MainActivity.this,
                         EventsActivity.class);
+
+                //bundle za prenos podataka
+                Bundle bundle = new Bundle();
+                bundle.putString("username", username);
+
+                //povezivanje bundle sa intentom
+                intent.putExtras(bundle);
+
+                //prelazak na sledeci activity
                 startActivity(intent);
             }
         }
@@ -94,6 +92,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //prelazak na sledeci activity
                 Intent intent = new Intent(MainActivity.this,
                         EventsActivity.class);
+
+                //bundle za prenos podataka
+                Bundle bundle = new Bundle();
+                bundle.putString("username", username);
+                bundle.putString("email", email);
+
+                intent.putExtras(bundle);
+
                 startActivity(intent);
             }
         }
