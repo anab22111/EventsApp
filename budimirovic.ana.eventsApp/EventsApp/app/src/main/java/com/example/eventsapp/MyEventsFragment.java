@@ -47,7 +47,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener{
             Intent intent = new Intent(getActivity(), AttendingEventsActivity.class);
             startActivity(intent);
         }else if(view.getId() == R.id.btnMyProfile){
-            Intent intent = new Intent(getActivity(), MyProfileActivity.class);
+            Intent intent = new Intent(getActivity(), ProfileActivity.class);
             startActivity(intent);
         }
     }
