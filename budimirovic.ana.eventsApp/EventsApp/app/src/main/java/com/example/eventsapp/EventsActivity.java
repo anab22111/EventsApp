@@ -9,9 +9,9 @@ import android.widget.TextView;
 
 public class EventsActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private TextView tvWelcome,tvUsername, tvUpcominEvents;
-    private Button events, myEvents, friends;
-
+    private TextView tvWelcome,tvUsername;
+    private Button btnEvents, btnMyEvents, btnFriends;
+    private EventsFragment eventsFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,19 +27,31 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
         tvUsername = findViewById(R.id.username);
         tvUsername.setText(username);
         tvWelcome = findViewById(R.id.welcome);
-        tvUpcominEvents = findViewById(R.id.tvUpcomingEvents);
 
-        events = findViewById(R.id.events);
-        myEvents = findViewById(R.id.myEvents);
-        friends = findViewById(R.id.friends);
-        friends.setEnabled(false);
+        btnEvents = findViewById(R.id.events);
+        btnMyEvents = findViewById(R.id.myEvents);
+        btnFriends = findViewById(R.id.friends);
 
-        events.setOnClickListener(this);
-        myEvents.setOnClickListener(this);
+        eventsFragment = new EventsFragment();
+
+        //load EventsFragment
+        getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragmentContanier, eventsFragment)
+                                .commit();
+
+        btnEvents.setOnClickListener(this);
+        btnMyEvents.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
 
+        if(view.getId() == R.id.events){    //load fragment eventsFragment
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContanier, eventsFragment)
+                    .commit();
+        }else if(view.getId() == R.id.myEvents){    //load fragment myEventsFragment
+
+        }
     }
 }
