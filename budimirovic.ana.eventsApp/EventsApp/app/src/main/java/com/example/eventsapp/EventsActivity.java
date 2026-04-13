@@ -11,8 +11,7 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
 
     private TextView tvWelcome,tvUsername;
     private Button btnEvents, btnMyEvents, btnFriends;
-    private EventsFragment eventsFragment;
-    private MyEventsFragment myEventsFragment;
+    String email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +22,7 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
 
 
         String username = bundle.getString("username");
-        String email = bundle.getString("email");  //ako je prosledjen samo username email ce biti null
+        email = bundle.getString("email");  //ako je prosledjen samo username email ce biti null
 
         tvUsername = findViewById(R.id.username);
         tvUsername.setText(username);
@@ -33,12 +32,9 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
         btnMyEvents = findViewById(R.id.myEvents);
         btnFriends = findViewById(R.id.friends);
 
-        eventsFragment = new EventsFragment();
-        myEventsFragment = new MyEventsFragment();
-
         //load EventsFragment at the beggining
         getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragmentContanier, eventsFragment)
+                        .add(R.id.fragmentContanier, new EventsFragment())
                                 .commit();
 
         btnEvents.setOnClickListener(this);
@@ -50,9 +46,20 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
 
         if(view.getId() == R.id.events){    //load fragment eventsFragment
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentContanier, eventsFragment)
+                    .replace(R.id.fragmentContanier, new EventsFragment())
                     .commit();
         }else if(view.getId() == R.id.myEvents){    //load fragment myEventsFragment
+
+            //sending data to myEventsFragment
+            String username = tvUsername.getText().toString();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("username",username);
+            bundle.putString("email", email);
+
+            MyEventsFragment myEventsFragment = new MyEventsFragment();
+            myEventsFragment.setArguments(bundle);
+
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContanier, myEventsFragment)
                     .commit();

@@ -15,4 +15,6 @@
     <string name="interestedEvents">Interested Events</string>
     <string name="attendingEvents">Attending Events</string>
     <string name="myProfile">My profile</string>
+    <string name="email">email</string>
+    <string name="endSession">end session</string>
 </resources>

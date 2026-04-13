@@ -34,6 +34,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener{
         btnAttendingEvents.setOnClickListener(this);
         btnInterestedEvents.setOnClickListener(this);
         btnMyProfile.setOnClickListener(this);
+
         return view;
     }
 
@@ -47,7 +48,20 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener{
             Intent intent = new Intent(getActivity(), AttendingEventsActivity.class);
             startActivity(intent);
         }else if(view.getId() == R.id.btnMyProfile){
+
+            String email = "";
+            String username = "";
+
+            //if there are arguments get them
+            if(getArguments() != null){
+                email = getArguments().getString("email");
+                username = getArguments().getString("username");
+            }
+
             Intent intent = new Intent(getActivity(), ProfileActivity.class);
+            intent.putExtra("email", email);
+            intent.putExtra("username", username);
+
             startActivity(intent);
         }
     }
