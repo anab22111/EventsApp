@@ -12,6 +12,7 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
     private TextView tvWelcome,tvUsername;
     private Button btnEvents, btnMyEvents, btnFriends;
     private EventsFragment eventsFragment;
+    private MyEventsFragment myEventsFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +34,9 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
         btnFriends = findViewById(R.id.friends);
 
         eventsFragment = new EventsFragment();
+        myEventsFragment = new MyEventsFragment();
 
-        //load EventsFragment
+        //load EventsFragment at the beggining
         getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragmentContanier, eventsFragment)
                                 .commit();
@@ -51,7 +53,9 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
                     .replace(R.id.fragmentContanier, eventsFragment)
                     .commit();
         }else if(view.getId() == R.id.myEvents){    //load fragment myEventsFragment
-
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContanier, myEventsFragment)
+                    .commit();
         }
     }
 }

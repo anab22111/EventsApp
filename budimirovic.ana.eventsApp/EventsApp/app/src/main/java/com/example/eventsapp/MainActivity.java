@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bundle1.putString("username", username);
                 bundle1.putString("email", email);
 
-                intent1.putExtras(bundle1                                );
+                intent1.putExtras(bundle1);
 
                 startActivity(intent1);
             }
