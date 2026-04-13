@@ -17,4 +17,8 @@
     <string name="myProfile">My profile</string>
     <string name="email">email</string>
     <string name="endSession">end session</string>
+    <string name="changePassword">Change password</string>
+    <string name="currentPassword">Current password</string>
+    <string name="newPassword">New password</string>
+    <string name="save">save</string>
 </resources>
