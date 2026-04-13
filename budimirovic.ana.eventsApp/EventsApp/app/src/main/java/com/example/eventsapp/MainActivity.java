@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-
     private Button firstLogin, secondLogin, firstRegister, secondRegister;
     private EditText loginUsername, loginPassword;
     private EditText registerUsername, registerPassword, registerEmail;
@@ -90,17 +89,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             if(username.equals("admin") && password.equals("admin") && email.equals("admin@gmail.com")){
                 //prelazak na sledeci activity
-                Intent intent = new Intent(MainActivity.this,
+                Intent intent1 = new Intent(MainActivity.this,
                         EventsActivity.class);
 
                 //bundle za prenos podataka
-                Bundle bundle = new Bundle();
-                bundle.putString("username", username);
-                bundle.putString("email", email);
+                Bundle bundle1 = new Bundle();
+                bundle1.putString("username", username);
+                bundle1.putString("email", email);
 
-                intent.putExtras(bundle);
+                intent1.putExtras(bundle1                                );
 
-                startActivity(intent);
+                startActivity(intent1);
             }
         }
     }

@@ -8,4 +8,5 @@
     <string name="welcome">Welcome</string>
     <string name="username">username</string>
     <string name="events">events</string>
+    <string name="myEvents">My Events</string>
 </resources>
