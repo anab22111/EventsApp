@@ -40,40 +40,37 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="2dp"
+        android:gravity="center_horizontal"
         >
 
         <Button
             android:id="@+id/events"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/events"
             android:layout_weight="1"
-            android:layout_marginEnd="2dp"
-            android:backgroundTint="@color/salmon"
+            android:backgroundTint="@color/purple_200"
             >
         </Button>
 
         <Button
             android:id="@+id/myEvents"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/myEvents"
             android:layout_weight="1"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="2dp"
-            android:backgroundTint="@color/salmon"
+            android:backgroundTint="@color/purple_200"
             >
         </Button>
 
         <Button
             android:id="@+id/friends"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/events"
             android:layout_weight="1"
             android:enabled="false"
-            android:layout_marginStart="2dp"
-            android:backgroundTint="@color/salmon"
+            android:backgroundTint="@color/purple_200"
             >
         </Button>
 

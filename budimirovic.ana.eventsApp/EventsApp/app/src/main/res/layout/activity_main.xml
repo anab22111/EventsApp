@@ -10,35 +10,34 @@
     android:orientation="vertical"
     android:padding="5dp"
     >
+
+<!--    layout for the main page-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/firstLogin"
+            android:id="@+id/btnFirstLogin"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/login"
-            android:layout_marginEnd="2dp">
-
+            >
         </Button>
 
         <Button
-            android:id="@+id/firstRegister"
+            android:id="@+id/btnFirstRegister"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginStart="2dp"
             android:text="@string/register" >
-
         </Button>
 
     </LinearLayout>
 
 
-<!--    prikaz nakon pritiska login-->
+<!--    layout after clicking login-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,7 +45,7 @@
         >
 
         <EditText
-            android:id="@+id/loginUsername"
+            android:id="@+id/etLoginUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/Username"
@@ -57,38 +56,35 @@
         </EditText>
 
         <EditText
-            android:id="@+id/loginPassword"
+            android:id="@+id/etLoginPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/Password"
             android:inputType="textPassword"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:visibility="gone">
+            android:visibility="gone"
+            >
         </EditText>
 
         <Button
-            android:id="@+id/secondLogin"
+            android:id="@+id/btnSecondLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+
             android:text="@string/login"
-            android:layout_marginTop="5dp"
             android:layout_gravity="center"
             android:visibility="gone"
             >
         </Button>
-
-
     </LinearLayout>
 
+<!--    layout after clicking register-->
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="2"
         android:rowCount="3"
         android:useDefaultMargins="true"
-
         >
 
         <TextView
@@ -102,7 +98,7 @@
         </TextView>
 
         <EditText
-            android:id="@+id/registerUsername"
+            android:id="@+id/etRegisterUsername"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_columnWeight="1"
@@ -123,7 +119,7 @@
         </TextView>
 
         <EditText
-            android:id="@+id/registerEmail"
+            android:id="@+id/etRegisterEmail"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_columnWeight="1"
@@ -144,7 +140,7 @@
         </TextView>
 
         <EditText
-            android:id="@+id/registerPassword"
+            android:id="@+id/etRegisterPassword"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_columnWeight="1"
@@ -157,7 +153,7 @@
     </GridLayout>
 
     <Button
-        android:id="@+id/secondRegister"
+        android:id="@+id/btnSecondRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -166,7 +162,4 @@
         android:visibility="gone"
         >
     </Button>
-
-
-
 </LinearLayout>
