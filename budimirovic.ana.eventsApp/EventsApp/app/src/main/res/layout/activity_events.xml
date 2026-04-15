@@ -50,7 +50,7 @@
             android:layout_height="match_parent"
             android:text="@string/events"
             android:layout_weight="1"
-            android:backgroundTint="@color/purple_200"
+            android:backgroundTint="@color/plum"
             >
         </Button>
 
@@ -60,7 +60,7 @@
             android:layout_height="match_parent"
             android:text="@string/myEvents"
             android:layout_weight="1"
-            android:backgroundTint="@color/purple_200"
+            android:backgroundTint="@color/plum"
             >
         </Button>
 
@@ -71,7 +71,7 @@
             android:text="@string/friends"
             android:layout_weight="1"
             android:enabled="false"
-            android:backgroundTint="@color/purple_200"
+            android:backgroundTint="@color/plum"
             >
         </Button>
 

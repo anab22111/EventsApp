@@ -18,7 +18,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/interestedEvents">
+            android:text="@string/interestedEvents"
+            android:backgroundTint="@color/purple">
         </Button>
 
         <Button
@@ -26,15 +27,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/attendingEvents">
+            android:text="@string/attendingEvents"
+            android:backgroundTint="@color/purple">
         </Button>
-
     </LinearLayout>
 
     <Button
         android:id="@+id/btnMyProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/myProfile">
+        android:text="@string/myProfile"
+        android:backgroundTint="@color/purple">
     </Button>
 </LinearLayout>
