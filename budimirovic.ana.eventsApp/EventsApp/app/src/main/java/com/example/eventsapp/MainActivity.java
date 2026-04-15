@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String password = etRegisterPassword.getText().toString();
             String email = etRegisterEmail.getText().toString();
 
-            if(!username.isEmpty() && !password.isEmpty() && !email.isEmpty() ){
+            if(username.equals("admin") && password.equals("admin") && !email.isEmpty() ){
                 Intent intent1 = new Intent(MainActivity.this,
                         EventsActivity.class);
 

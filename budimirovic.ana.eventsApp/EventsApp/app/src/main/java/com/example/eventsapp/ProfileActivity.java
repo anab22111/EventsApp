@@ -45,6 +45,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }else if(view.getId() == R.id.btnPassword){   //go to PasswordActivity
             Intent intent = new Intent(ProfileActivity.this,
                     PasswordActivity.class);
+
             startActivity(intent);
         }
     }
