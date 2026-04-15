@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent1 = new Intent(MainActivity.this,
                         EventsActivity.class);
 
-                //bundle to transfer data
+                //create bundle to transfer data
                 Bundle bundle1 = new Bundle();
                 bundle1.putString("username", username);
                 bundle1.putString("email", email);

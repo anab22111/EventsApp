@@ -11,21 +11,26 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
 
     private TextView tvWelcome,tvUsername;
     private Button btnEvents, btnMyEvents, btnFriends;
-    String email;
+    private String email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
 
-        //preuzimanje podataka koji su preneti iz prethodnog activity-a
-        Bundle bundle = getIntent().getExtras();    //uzimanje reference bundle-a koji je prosledjen
-
+        //taking data that was transfered from the MainActivity
+        Bundle bundle = getIntent().getExtras();    //taking a reference of the bundle that was forwarded
 
         String username = bundle.getString("username");
-        email = bundle.getString("email");  //ako je prosledjen samo username email ce biti null
+
+        email = bundle.getString("email");
+
+        //check to see if an email was forwarded
+        if(email == null){
+            email="";        //if not place empty string
+        }
 
         tvUsername = findViewById(R.id.username);
-        tvUsername.setText(username);
+        tvUsername.setText(username);                   //set forwarded username
         tvWelcome = findViewById(R.id.welcome);
 
         btnEvents = findViewById(R.id.events);
@@ -57,6 +62,7 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
             bundle.putString("username",username);
             bundle.putString("email", email);
 
+            //sending data by setting arguments for the next fragment
             MyEventsFragment myEventsFragment = new MyEventsFragment();
             myEventsFragment.setArguments(bundle);
 

@@ -21,4 +21,5 @@
     <string name="currentPassword">Current password</string>
     <string name="newPassword">New password</string>
     <string name="save">save</string>
+    <string name="friends">friends</string>
 </resources>

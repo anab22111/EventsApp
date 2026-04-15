@@ -24,7 +24,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        //inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_my_events, container, false);
 
         Button btnInterestedEvents = view.findViewById(R.id.btnInterestedEvents);
@@ -41,13 +41,13 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View view) {
 
-        if(view.getId() == R.id.btnInterestedEvents){
+        if(view.getId() == R.id.btnInterestedEvents){    //go to InterestedEventsActivity
             Intent intent = new Intent(getActivity(), InterestedEventsActivity.class);
             startActivity(intent);
-        }else if(view.getId() == R.id.btnAttendingEvents){
+        }else if(view.getId() == R.id.btnAttendingEvents){    //go to AttendingEventsActivity
             Intent intent = new Intent(getActivity(), AttendingEventsActivity.class);
             startActivity(intent);
-        }else if(view.getId() == R.id.btnMyProfile){
+        }else if(view.getId() == R.id.btnMyProfile){        //go to ProfileActivity
 
             String email = "";
             String username = "";
@@ -58,7 +58,13 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener{
                 username = getArguments().getString("username");
             }
 
+            //if email wasnt forwarded set to an empty string
+            if(email == null){
+                email = "";
+            }
+
             Intent intent = new Intent(getActivity(), ProfileActivity.class);
+
             intent.putExtra("email", email);
             intent.putExtra("username", username);
 

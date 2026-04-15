@@ -32,11 +32,16 @@ public class PasswordActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
 
         if(view.getId() == R.id.btnSave){
-            //pokazati da je uspesno sacuvana nova sifra i zavrsiti acticity
-            Toast.makeText(PasswordActivity.this, "Password changed successfully!", Toast.LENGTH_SHORT).show();
-
-            finish();
+            String current = etCurrent.getText().toString();
+            if(current.equals("admin")){
+                //show that the password was changed successfully
+                Toast.makeText(PasswordActivity.this, "Password changed successfully!", Toast.LENGTH_SHORT).show();
+                finish();
+            }else{
+                Toast.makeText(PasswordActivity.this, "Incorrect current password!", Toast.LENGTH_SHORT).show();
+                etCurrent.setText("");
+                etNew.setText("");
+            }
         }
-
     }
 }
