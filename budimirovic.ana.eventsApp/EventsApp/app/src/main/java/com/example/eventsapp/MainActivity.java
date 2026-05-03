@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private Button btnFirstLogin, btnSecondLogin, btnFirstRegister, btnSecondRegister;
@@ -78,6 +79,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 //go to next activity
                 startActivity(intent);
+            }else if(!username.equals("admin")){
+                Toast.makeText(MainActivity.this, "Username doesn't exist!", Toast.LENGTH_SHORT).show();
+            }else if(!password.equals("admin")){
+                Toast.makeText(MainActivity.this, "Incorrect password!", Toast.LENGTH_SHORT).show();
             }
         }
         else if(view.getId() == R.id.btnSecondRegister){
@@ -93,12 +98,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Bundle bundle1 = new Bundle();
                 bundle1.putString("username", username);
                 bundle1.putString("email", email);
+                bundle1.putString("password", password);
 
                 //connecting bundle to intent
                 intent1.putExtras(bundle1);
 
                 //go to next activity
                 startActivity(intent1);
+            }else{
+                Toast.makeText(MainActivity.this, "You need to fill in all the fields!", Toast.LENGTH_SHORT).show();
             }
         }
     }

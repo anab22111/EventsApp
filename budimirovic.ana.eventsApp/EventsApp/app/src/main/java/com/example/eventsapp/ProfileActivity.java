@@ -11,6 +11,7 @@ import android.widget.TextView;
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView tvUsername, tvEmail;
     private Button btnPassword, btnEndSession;
+    private String password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +22,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         String username = bundle.getString("username");
         String email = bundle.getString("email");
+        password = bundle.getString("password");
+
 
         tvUsername = findViewById(R.id.tvUsername);
         tvEmail = findViewById(R.id.tvEmail);
@@ -45,6 +48,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }else if(view.getId() == R.id.btnPassword){   //go to PasswordActivity
             Intent intent = new Intent(ProfileActivity.this,
                     PasswordActivity.class);
+
+            // send password to next activity
+            Bundle bundle = new Bundle();
+            bundle.putString("password", password);
+
+            intent.putExtras(bundle);
 
             startActivity(intent);
         }

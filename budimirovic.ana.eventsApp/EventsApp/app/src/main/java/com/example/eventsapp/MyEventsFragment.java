@@ -51,11 +51,13 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener{
 
             String email = "";
             String username = "";
+            String password = "";
 
             //if there are arguments get them
             if(getArguments() != null){
                 email = getArguments().getString("email");
                 username = getArguments().getString("username");
+                password = getArguments().getString("password");
             }
 
             //if email wasnt forwarded set to an empty string
@@ -67,6 +69,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener{
 
             intent.putExtra("email", email);
             intent.putExtra("username", username);
+            intent.putExtra("password", password);
 
             startActivity(intent);
         }
