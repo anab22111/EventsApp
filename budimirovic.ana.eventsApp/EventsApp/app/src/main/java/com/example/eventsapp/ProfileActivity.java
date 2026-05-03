@@ -44,7 +44,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if(view.getId() == R.id.btnEndSession){    //go to MainActivity
             Intent intent = new Intent(ProfileActivity.this,
                     MainActivity.class);
+
+            // start new task and delete previous activities from history
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
             startActivity(intent);
+            finish();
         }else if(view.getId() == R.id.btnPassword){   //go to PasswordActivity
             Intent intent = new Intent(ProfileActivity.this,
                     PasswordActivity.class);
