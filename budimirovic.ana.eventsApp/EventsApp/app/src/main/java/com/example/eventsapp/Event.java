@@ -5,43 +5,31 @@ import java.time.format.DateTimeFormatter;
 
 public class Event {
 
-    private String name;
-    private String description;
-    private String location;
-    private String dateTime;
-    private String category;
-    private int imageResld;   // resurs slike
+    private String name, description, location, dateTime, category;
+    private int imageResld, capacity, attendingCount, ratingCount;
     private boolean isPromoted;
-    private int capacity;
-    private int attendingCount;
     private double averageRating;
-    private int ratingCount;
+
 
     // constructor for promoted events
-    public Event(String name, String description, String location, String dateTime, String category, int imageResld, boolean isPromoted, int capacity, int attendingCount, double averageRating, int ratingCount){
+    public Event(String name, String description, String location, String dateTime, boolean isPromoted,  String category, int imageResld, int capacity){
         this.name = name;
         this.description = description;
         this.location = location;
         this.dateTime = dateTime;
         this.imageResld = imageResld;
-        this.isPromoted = isPromoted;
         this.capacity = capacity;
-        this.attendingCount = attendingCount;
-        this.averageRating = averageRating;
-        this.ratingCount = ratingCount;
+        this.isPromoted = isPromoted;
         this.category = category;
     }
 
     // constructor for regular events
-    public Event(String name, String description, String location, String dateTime, String category, int imageResld, boolean isPrompted, int attendingCount, double averageRating, int ratingCount){
+    public Event(String name, String description, String location, String dateTime, String category, int imageResld){
         this.name = name;
         this.description = description;
         this.location = location;
         this.dateTime = dateTime;
         this.imageResld = imageResld;
-        this.attendingCount = attendingCount;
-        this.averageRating = averageRating;
-        this.ratingCount = ratingCount;
         this.category = category;
     }
 
@@ -50,11 +38,11 @@ public class Event {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm");
 
         try {
-            // convert string to LocalDateTime object
+            // convert string dateTime to LocalDateTime object
             LocalDateTime eventDateTime = LocalDateTime.parse(this.dateTime, formatter);
 
             // compare to current date and time
-            // if true the events has passed
+            // if true the event has passed
             return eventDateTime.isBefore(LocalDateTime.now());
         } catch (Exception e) {
             // if format of string dateTime isn't correct catch exception
