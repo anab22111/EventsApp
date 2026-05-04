@@ -1,6 +1,7 @@
 package com.example.eventsapp;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Event {
 
@@ -45,9 +46,22 @@ public class Event {
     }
 
     public boolean isPast(){
-        LocalDateTime now = LocalDateTime.now();
+        // definition of date and time format
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm");
 
-        return true;
+        try {
+            // convert string to LocalDateTime object
+            LocalDateTime eventDateTime = LocalDateTime.parse(this.dateTime, formatter);
+
+            // compare to current date and time
+            // if true the events has passed
+            return eventDateTime.isBefore(LocalDateTime.now());
+        } catch (Exception e) {
+            // if format of string dateTime isn't correct catch exception
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     public void addRating(int rating){
@@ -55,7 +69,7 @@ public class Event {
         this.averageRating = (this.averageRating+rating)/2;
     }
 
-    public void setName(String Name){
+    public void setName(String name){
         this.name = name;
     }
 
@@ -71,8 +85,8 @@ public class Event {
         this.dateTime = dateTime;
     }
 
-    public void setCategory(String location){
-        this.location = location;
+    public void setCategory(String category){
+        this.category = category;
     }
 
     public void setPromoted(boolean isPromoted){
