@@ -6,30 +6,30 @@ import java.time.format.DateTimeFormatter;
 public class Event {
 
     private String name, description, location, dateTime, category;
-    private int imageResld, capacity, attendingCount, ratingCount;
+    private int imageResId, capacity, attendingCount, ratingCount;
     private boolean isPromoted;
     private double averageRating;
 
 
     // constructor for promoted events
-    public Event(String name, String description, String location, String dateTime, boolean isPromoted,  String category, int imageResld, int capacity){
+    public Event(String name, String description, String location, String dateTime, boolean isPromoted,  String category, int imageResId, int capacity){
         this.name = name;
         this.description = description;
         this.location = location;
         this.dateTime = dateTime;
-        this.imageResld = imageResld;
+        this.imageResId = imageResId;
         this.capacity = capacity;
         this.isPromoted = isPromoted;
         this.category = category;
     }
 
     // constructor for regular events
-    public Event(String name, String description, String location, String dateTime, String category, int imageResld){
+    public Event(String name, String description, String location, String dateTime, String category, int imageResId){
         this.name = name;
         this.description = description;
         this.location = location;
         this.dateTime = dateTime;
-        this.imageResld = imageResld;
+        this.imageResId = imageResId;
         this.category = category;
     }
 
@@ -89,8 +89,8 @@ public class Event {
         this.attendingCount = attendingCount;
     }
 
-    public void setImageResld(int imageResld){
-        this.imageResld = imageResld;
+    public void setImageResld(int imageResId){
+        this.imageResId = imageResId;
     }
 
     public String getName() {
@@ -124,7 +124,7 @@ public class Event {
     }
 
     public int getImageResld() {
-        return imageResld;
+        return imageResId;
     }
 
     public int getRatingCount() {
