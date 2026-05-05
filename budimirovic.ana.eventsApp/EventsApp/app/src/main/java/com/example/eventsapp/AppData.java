@@ -13,7 +13,7 @@ public class AppData {
     // manually filling lists in a static block
     //static block is run only once
     static{
-        // adding events to AllEvents list
+        // adding events to allEvents list
         allEvents.add(EventFactory.createPromotedEvent("Ultra Europe", "Music festival", "Split, Croatia", "10.07.2026. 20:00", "Festival", 101, 50000));
         allEvents.add(EventFactory.createPromotedEvent("Champions League Final", "Greatest final ever", "USA, Miami", "25.08.2026. 21:00", "Football", 101, 400000));
         allEvents.add(EventFactory.createRegularEvent("Exit", "Biggest music festival in Serbia", "Petrovaradin, Novi Sad", "15.07.2026. 18:00", "Festival", 1));
@@ -63,7 +63,7 @@ public class AppData {
         return allEvents.stream()
                 .filter(e -> e.getCategory().equalsIgnoreCase(category)) // look only at events with the correct category
                 .sorted(Comparator.comparing(Event::getDateTime))        // sort by date
-                .collect(Collectors.toList());                           // return new list with sorted events form the forwarded category
+                .collect(Collectors.toList());                           // return new list with sorted events with the forwarded category
     }
     public static Event findByName(String name) {
         //find event by name
