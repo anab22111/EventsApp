@@ -1,7 +1,9 @@
 package com.example.eventsapp;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AppData {
     public static List<Event> allEvents = new ArrayList<>();
@@ -50,12 +52,19 @@ public class AppData {
 
     }
 
-    //TO DO
+    public static List<Event> getSortedEvents() {
+        // array list to stream of data
+        return allEvents.stream()
+                .sorted(Comparator.comparing(Event::isPromoted, Comparator.reverseOrder()))   // sort by promotion of an event, in reverse because java takes false as the firsts
+                .collect(Collectors.toList());    // collect all the data from the stream
+    }
 
-    // getSortedEvents()
-
-    //getSortedEventsByCategory
-
+    public static List<Event> getEventsByCategory(String category) {
+        return allEvents.stream()
+                .filter(e -> e.getCategory().equalsIgnoreCase(category)) // look only at events with the correct category
+                .sorted(Comparator.comparing(Event::getDateTime))        // sort by date
+                .collect(Collectors.toList());                           // return new list with sorted events form the forwarded category
+    }
     public static Event findByName(String name) {
         //find event by name
         for (Event e : allEvents) {
