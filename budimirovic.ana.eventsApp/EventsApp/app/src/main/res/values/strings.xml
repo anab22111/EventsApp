@@ -23,4 +23,13 @@
     <string name="save">save</string>
     <string name="friends">friends</string>
     <string name="featured">FEATURED</string>
+    <string name="marathon">MARATHON</string>
+    <string name="football">FOOTBALL</string>
+    <string name="concert">CONCERT</string>
+    <string name="party">PARTY</string>
+    <string name="standUpTheater"><![CDATA[STAND UP & THEATER]]></string>
+    <string name="festival">FESTIVAL</string>
+    <string name="exhibition">EXHIBITION</string>
+    <string name="all">all</string>
+    <string name="addEvent">add event</string>
 </resources>

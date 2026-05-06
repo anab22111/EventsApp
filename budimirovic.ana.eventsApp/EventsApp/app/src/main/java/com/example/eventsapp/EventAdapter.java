@@ -41,7 +41,7 @@ public class EventAdapter extends BaseAdapter {
 
     // getView() returns View - one element of the list
     // position is the position in the list
-    // converView is
+    // convertView is
     // ViewGroup is
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
