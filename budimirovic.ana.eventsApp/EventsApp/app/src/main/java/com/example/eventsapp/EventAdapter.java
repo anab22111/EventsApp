@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,12 +45,70 @@ public class EventAdapter extends BaseAdapter {
     // ViewGroup is
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        RecyclerView.ViewHolder holder;
+        ViewHolder holder;
 
-        if(convertView == null){
+        if(convertView == null){   // if there is no view
+            // make view - inflate the xml where the element of the list is described
             convertView = inflater.inflate(R.layout.event_item, parent, false);
 
+            // create new Holder
+            holder = new ViewHolder();
+            // find elements to put in viewHolder
+            holder.image = convertView.findViewById(R.id.eventImage);
+            holder.name = convertView.findViewById(R.id.tvName);
+            holder.category = convertView.findViewById(R.id.tvCategory);
+            holder.location = convertView.findViewById(R.id.tvLocation);
+            holder.dateAndTime = convertView.findViewById(R.id.tvdateAndTime);
+            holder.featured = convertView.findViewById(R.id.tvPromoted);
+            holder.freeSeats = convertView.findViewById(R.id.tvFreeSeats);
+        }else{
+            // if the view already exists
+            // when called the first time all the ViewHolder elements were put in Tag
+            // when called any other time just use .getTag() to get all the elements from it
+            // elements are addresses of ViewHolder elements
+
+            //.getTag() returns Object of any type, so we need to cast it to ViewHolder
+            holder = (ViewHolder) convertView.getTag();
         }
 
+        Event event =events.get(position);
+
+        holder.image.setImageResource(R.drawable.marathon_runner);   // TO DO: CHANGE
+        holder.name.setText(event.getName());
+        holder.category.setText(event.getCategory());
+        holder.location.setText(event.getLocation());
+        holder.dateAndTime.setText(event.getDateTime());
+        // if an event is promoted set visibility of tvFeatured to VISIBLE
+        // and make freeSeats visible
+        if(event.isPromoted()){
+            holder.featured.setVisibility(View.VISIBLE);
+            holder.freeSeats.setVisibility(View.VISIBLE);
+            holder.freeSeats.setText(event.getCapacity());
+        }else{
+            holder.featured.setVisibility(View.GONE);
+            holder.freeSeats.setVisibility(View.GONE);
+        }
+
+        return convertView;
     }
+
+    // ViewHolder sablon, used to store elements so that findViewById() isn't repeatedly called
+    static class ViewHolder {
+        ImageView image;
+        TextView name;
+        TextView category;
+        TextView location;
+        TextView dateAndTime;
+        TextView featured;
+        TextView freeSeats;
+    }
+
+    public void setEvents(){
+
+    }
+
+    public void deleteEvents(){
+
+    }
+
 }
