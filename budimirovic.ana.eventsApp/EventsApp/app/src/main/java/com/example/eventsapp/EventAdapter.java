@@ -103,12 +103,17 @@ public class EventAdapter extends BaseAdapter {
         TextView freeSeats;
     }
 
-    public void setEvents(){
+    public void setEvents(ArrayList<Event> events){
+        this.events.clear();           // delete old elements
+        this.events.addAll(events);    // add new
+        notifyDataSetChanged();
 
     }
 
+    // delete all elements of the list
     public void deleteEvents(){
-
+        this.events.clear();
+        notifyDataSetChanged();
     }
 
 }
