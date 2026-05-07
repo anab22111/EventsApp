@@ -44,4 +44,6 @@
     <string name="noAttendingEv">You don\'t have any registered events.</string>
     <string name="UpcomingEvents">Upcoming Events</string>
     <string name="PastEvents">Passed events</string>
+    <string name="interested">interested</string>
+    <string name="attending">attending</string>
 </resources>
