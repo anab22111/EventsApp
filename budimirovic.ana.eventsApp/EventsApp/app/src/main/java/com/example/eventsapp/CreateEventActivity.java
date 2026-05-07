@@ -52,6 +52,16 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
         // connect adapter and spinner
         spinner.setAdapter(adapter);
+
+        // set istener for checkbox
+        checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                etCapacity.setVisibility(View.VISIBLE); // show if checked
+            } else {
+                etCapacity.setVisibility(View.GONE);    // hide if not checked
+                etCapacity.setText("");                 // refresh for next time
+            }
+        });
     }
 
     @Override
@@ -79,7 +89,14 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                     Toast.makeText(this, "Capacity cannot be empty for promoted events.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                capacity = Integer.parseInt(c);   // convert string to int
+
+                try {
+                    capacity = Integer.parseInt(c);
+                } catch (NumberFormatException e) {
+                    Toast.makeText(this, "Please enter a valid number for capacity.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if(capacity <= 0){
                     Toast.makeText(this, "Capacity must be greater than 0.", Toast.LENGTH_SHORT).show();
                     return;
