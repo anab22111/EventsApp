@@ -93,7 +93,11 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+        Intent intent1 = new Intent(getContext(),
+                EventsActivity.class);
         // go to EventDetailsActivity
+
+
 
     }
 
