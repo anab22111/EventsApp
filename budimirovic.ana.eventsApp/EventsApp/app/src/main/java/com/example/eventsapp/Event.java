@@ -123,7 +123,7 @@ public class Event {
         return capacity;
     }
 
-    public int getImageResld() {
+    public int getImageResId() {
         return imageResId;
     }
 

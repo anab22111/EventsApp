@@ -61,6 +61,9 @@ public class EventAdapter extends BaseAdapter {
             holder.dateAndTime = convertView.findViewById(R.id.tvdateAndTime);
             holder.featured = convertView.findViewById(R.id.tvPromoted);
             holder.freeSeats = convertView.findViewById(R.id.tvFreeSeats);
+
+            // set Tag
+            convertView.setTag(holder);
         }else{
             // if the view already exists
             // when called the first time all the ViewHolder elements were put in Tag
@@ -73,7 +76,7 @@ public class EventAdapter extends BaseAdapter {
 
         Event event =events.get(position);
 
-        holder.image.setImageResource(R.drawable.marathon_runner);   // TO DO: CHANGE
+        holder.image.setImageResource(event.getImageResId());
         holder.name.setText(event.getName());
         holder.category.setText(event.getCategory());
         holder.location.setText(event.getLocation());
@@ -83,7 +86,7 @@ public class EventAdapter extends BaseAdapter {
         if(event.isPromoted()){
             holder.featured.setVisibility(View.VISIBLE);
             holder.freeSeats.setVisibility(View.VISIBLE);
-            holder.freeSeats.setText(event.getCapacity());
+            holder.freeSeats.setText(String.valueOf(event.getCapacity()));
         }else{
             holder.featured.setVisibility(View.GONE);
             holder.freeSeats.setVisibility(View.GONE);
