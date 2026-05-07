@@ -39,6 +39,8 @@ public class EventAdapter extends BaseAdapter {
         return position;
     }
 
+    // VIEWHOLDER SABLON? ????!!!!!!!!!!!!!!!!!!!!
+
     // getView() returns View - one element of the list
     // position is the position in the list
     // convertView is one row of the list
@@ -88,7 +90,7 @@ public class EventAdapter extends BaseAdapter {
         if(event.isPromoted()){
             holder.featured.setVisibility(View.VISIBLE);
             holder.freeSeats.setVisibility(View.VISIBLE);
-            holder.freeSeats.setText(String.valueOf(event.getCapacity()));
+            holder.freeSeats.setText("Slobodnih mesta "+String.valueOf(event.getCapacity())+"/"+String.valueOf(event.getCapacity()));
             convertView.setBackgroundColor(context.getResources().getColor(R.color.plum));   // have to use context because eventAdapter isn't an activity
         }else{
             holder.featured.setVisibility(View.GONE);

@@ -84,10 +84,17 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
 
+    // parent - the AdapterView where the click happened
+    // view - The view within the AdapterView that was clicked (this will be a view provided by the adapter)
+    // position - position of the view in adapter
+    // id - The row id of the item that was clicked.
+    // id and position usually the same
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         // go to EventDetailsActivity
+
+
 
 
     }
