@@ -39,4 +39,5 @@
     <string name="promotedEvent">Promoted event</string>
     <string name="capacity">Capacity</string>
     <string name="createEvent">create event</string>
+    <string name="eventName">eventName</string>
 </resources>

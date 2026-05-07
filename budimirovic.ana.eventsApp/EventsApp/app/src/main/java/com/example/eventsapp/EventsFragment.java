@@ -187,5 +187,9 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             // update data set/list
             adapter.notifyDataSetChanged();
         }
+
+
+
+
     }
 }
