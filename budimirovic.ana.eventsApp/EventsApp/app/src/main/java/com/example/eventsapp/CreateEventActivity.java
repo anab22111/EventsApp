@@ -5,11 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -33,8 +37,21 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         btnCreateEvent = findViewById(R.id.btnCreateEvent);
 
         btnCreateEvent.setOnClickListener(this);
-
         checkbox.setOnCheckedChangeListener(null);
+
+        // make adapter for the list of categories
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+        // add categories
+        adapter.add("Marathon");
+        adapter.add("Party");
+        adapter.add("Exhibition");
+        adapter.add("Football");
+        adapter.add("Stand-Up & Theater");
+        adapter.add("Festival");
+        adapter.add("Concert");
+
+        // connect adapter and spinner
+        spinner.setAdapter(adapter);
     }
 
     @Override
@@ -46,7 +63,9 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             String location = etLocation.getText().toString();
             String c = etCapacity.getText().toString();
             String description = etDescription.getText().toString();
+            String category = spinner.getSelectedItem().toString();
             int capacity = 0;
+
 
             // if any of these fields are empty send toast message and dont create event
             if(name.isEmpty() || dateTime.isEmpty() || location.isEmpty()){
@@ -60,9 +79,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                     Toast.makeText(this, "Capacity cannot be empty for promoted events.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 capacity = Integer.parseInt(c);   // convert string to int
-
                 if(capacity <= 0){
                     Toast.makeText(this, "Capacity must be greater than 0.", Toast.LENGTH_SHORT).show();
                     return;
@@ -72,22 +89,18 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             // TO DO ?????
             // all fields field, check if format of DateTime is correct
 
-
-            String nesto = "nesto";  // dok ne zavrsim spinner  !!!!!!!!!!!!!!!!!!!!!!!
-
             // create event
+            Event event;
             if(checkbox.isChecked()){    // create promoted event
-                Event event = EventFactory.createPromotedEvent(name, description, location, dateTime, nesto, R.drawable.marathon_runner, capacity);
+                event = EventFactory.createPromotedEvent(name, description, location, dateTime, category, R.drawable.marathon_runner, capacity);
             }else{     // create regular event
-                Event event = EventFactory.createRegularEvent(name, description, location, dateTime, nesto, R.drawable.marathon_runner);
+                event = EventFactory.createRegularEvent(name, description, location, dateTime, category, R.drawable.marathon_runner);
             }
 
-            // add EVent to list  TO DO !!!!!!!!!!!!!!!!!!!!!!
+            AppData.allEvents.add(event);    // add Event to list
 
             Toast.makeText(this, "Event successfully created.", Toast.LENGTH_SHORT).show();
             finish();
-
-
 
         }
     }

@@ -95,9 +95,6 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
         // go to EventDetailsActivity
 
-
-
-
     }
 
     @Override
@@ -158,9 +155,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             Intent intent = new Intent(getActivity(), CreateEventActivity.class);
             startActivity(intent);
-
         }
-
     }
 
     public void resetColors(){
@@ -173,6 +168,14 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
         btnAll.setBackgroundColor(getResources().getColor(R.color.purple_200));
         btnAddEvent.setBackgroundColor(getResources().getColor(R.color.purple_200));
         btnConcert.setBackgroundColor(getResources().getColor(R.color.purple_200));
-
+    }
+    @Override
+    public void onResume() {   // when back to fragment refresh the list - needed when coming back from CreateEventActivity
+        super.onResume();
+        // check to see if adapter exists
+        if (adapter != null) {
+            // update data set/list
+            adapter.notifyDataSetChanged();
+        }
     }
 }
