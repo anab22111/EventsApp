@@ -32,4 +32,11 @@
     <string name="exhibition">EXHIBITION</string>
     <string name="all">all</string>
     <string name="addEvent">add event</string>
+    <string name="NazivDogadjaja">Event name</string>
+    <string name="Description">Description</string>
+    <string name="Location">Location</string>
+    <string name="DateTime">dd.MM.yyyy HH:mm</string>
+    <string name="promotedEvent">Promoted event</string>
+    <string name="capacity">Capacity</string>
+    <string name="createEvent">create event</string>
 </resources>

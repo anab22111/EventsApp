@@ -1,5 +1,6 @@
 package com.example.eventsapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -155,6 +156,8 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
         }else if(view.getId() == R.id.btnAddEvent){
             // go to CreateEventActivity
 
+            Intent intent = new Intent(getActivity(), CreateEventActivity.class);
+            startActivity(intent);
 
         }
 
