@@ -6,23 +6,12 @@
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\LENOVO\.android\avd\Pixel_3a_API_36_extension_level_19_x86_64.avd" />
+            <type value="SERIAL_NUMBER" />
+            <value value="R5CT40PQB6J" />
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <targetSelectedWithDropDown>
-      <Target>
-        <type value="QUICK_BOOT_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\LENOVO\.android\avd\Pixel_3a_API_36_extension_level_19_x86_64.avd" />
-          </Key>
-        </deviceKey>
-      </Target>
-    </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2026-05-07T23:11:05.529717Z" />
+    <timeTargetWasSelectedWithDropDown value="2026-05-07T23:23:43.153072800Z" />
   </component>
 </project>
