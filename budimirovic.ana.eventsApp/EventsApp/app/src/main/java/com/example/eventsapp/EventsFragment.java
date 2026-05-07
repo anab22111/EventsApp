@@ -87,6 +87,9 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+        // go to EventDetailsActivity
+
+
     }
 
     @Override
@@ -106,7 +109,6 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             adapter.setEvents(AppData.getEventsByCategory("Marathon"));
 
-
         }else if(view.getId() == R.id.btnFootball){
 
             btnFootball.setBackgroundColor(getResources().getColor(R.color.plum));
@@ -118,7 +120,6 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             btnFestival.setBackgroundColor(getResources().getColor(R.color.plum));
 
             adapter.setEvents(AppData.getEventsByCategory("Festival"));
-            ;
 
         }else if(view.getId() == R.id.btnParty){
 
@@ -126,13 +127,11 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             adapter.setEvents(AppData.getEventsByCategory("Party"));
 
-
         }else if(view.getId() == R.id.btnStandUpTheater){
 
             btnStandUpTheater.setBackgroundColor(getResources().getColor(R.color.plum));
 
             adapter.setEvents(AppData.getEventsByCategory("Stand-Up & Theater"));
-
 
         }else if(view.getId() == R.id.btnAll){
 
@@ -140,19 +139,14 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             adapter.setEvents(AppData.getSortedEvents());
 
-
-
         }else if(view.getId() == R.id.btnConcert){
 
             btnConcert.setBackgroundColor(getResources().getColor(R.color.plum));
 
             adapter.setEvents(AppData.getEventsByCategory("Concert"));
 
-
-
         }else if(view.getId() == R.id.btnAddEvent){
-
-
+            // go to CreateEventActivity
 
 
         }

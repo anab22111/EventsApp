@@ -15,7 +15,7 @@ public class AppData {
     static{
         // adding events to allEvents list
         allEvents.add(EventFactory.createPromotedEvent("Ultra Europe", "Music festival", "Split, Croatia", "10.07.2026. 20:00", "Festival", R.drawable.marathon_runner, 50000));
-        allEvents.add(EventFactory.createPromotedEvent("Champions League Final", "Greatest final ever", "USA, Miami", "25.08.2026. 21:00", "Football", R.drawable.marathon_runner, 400000));
+        allEvents.add(EventFactory.createPromotedEvent("Champions League Final", "Greatest final ever", "Spain, Madrid", "25.08.2026. 21:00", "Football", R.drawable.marathon_runner, 400000));
         allEvents.add(EventFactory.createRegularEvent("Exit", "Biggest music festival in Serbia", "Petrovaradin, Novi Sad", "15.07.2026. 18:00", "Festival", R.drawable.marathon_runner));
         allEvents.add(EventFactory.createRegularEvent("Things unfinished", "Maja Momirov exhibition", "Petrovaradin, Novi Sad", "20.12.2025. 18:00", "Exhibition", R.drawable.marathon_runner));  // prosao
         allEvents.add(EventFactory.createRegularEvent("Fruska gora marathon", "49th Fruska Gora marathon", "Fruska Gora, Popovica", "25.04.2026. 09:00", "Marathon", R.drawable.marathon_runner));  //prosao
@@ -23,7 +23,6 @@ public class AppData {
         allEvents.add(EventFactory.createPromotedEvent("NEON party", "The best party is back!", "Štark Arena, Belgrade", "05.02.2024. 20:00", "Party", R.drawable.marathon_runner, 200)); // prosao
         allEvents.add(EventFactory.createRegularEvent("Durmitor marathon", "50th Durmitor marathon", "Durmitor, Montenegro", "25.08.2026. 09:00", "Marathon", R.drawable.marathon_runner));
         allEvents.add(EventFactory.createRegularEvent("Coldplay Live", "Music of the Spheres World Tour", "Wembley Stadium, London", "12.06.2026. 20:00", "Concert", R.drawable.marathon_runner));
-        allEvents.add(EventFactory.createRegularEvent("Digital Art Expo", "Future of digital creativity", "Museum of Contemporary Art, Belgrade", "15.09.2026. 10:00", "Exhibition",  R.drawable.marathon_runner));
         allEvents.add(EventFactory.createRegularEvent("Beer Fest", "Belgrade traditional beer and music festival", "Ušće, Belgrade", "15.08.2026. 18:00", "Festival", R.drawable.marathon_runner));
         allEvents.add(EventFactory.createRegularEvent("Techno Warehouse", "Underground techno experience", "Petrovaradin, Novi Sad", "05.12.2026. 23:00", "Party", R.drawable.marathon_runner));
         allEvents.add(EventFactory.createRegularEvent("Van Gogh Experience", "Immersive digital art exhibition", "Hala 4, Beogradski Sajam", "10.12.2026. 12:00", "Exhibition", R.drawable.marathon_runner));
@@ -32,6 +31,7 @@ public class AppData {
         allEvents.add(EventFactory.createRegularEvent("Državni Posao", "Live comedy show with the famous trio", "Srpsko narodno pozorište, Novi Sad", "15.11.2026. 20:00", "Stand-Up & Theater", R.drawable.marathon_runner));
         allEvents.add(EventFactory.createRegularEvent("Nikola Djuricko Show", "Showbiz stand-up comedy", "SNP, Novi Sad", "20.10.2026. 20:00", "Stand-Up & Theater", R.drawable.marathon_runner));
         allEvents.add(EventFactory.createRegularEvent("Hamlet", "Modern interpretation of Shakespeare", "JDP, Belgrade", "25.11.2026. 20:00", "Stand-Up & Theater", R.drawable.marathon_runner));
+        allEvents.add(EventFactory.createRegularEvent("World Cup Semi Final", "Spain - France", "USA, Miami", "30.11.2026. 20:00", "Football", R.drawable.marathon_runner));
 
         // adding events to interestedEvents
         interestedEvents.add(allEvents.get(0)); // Ultra Europe

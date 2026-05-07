@@ -41,7 +41,7 @@ public class EventAdapter extends BaseAdapter {
 
     // getView() returns View - one element of the list
     // position is the position in the list
-    // convertView is
+    // convertView is one row of the list
     // ViewGroup is
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -81,15 +81,20 @@ public class EventAdapter extends BaseAdapter {
         holder.category.setText(event.getCategory());
         holder.location.setText(event.getLocation());
         holder.dateAndTime.setText(event.getDateTime());
+
         // if an event is promoted set visibility of tvFeatured to VISIBLE
         // and make freeSeats visible
+        // make the color different
         if(event.isPromoted()){
             holder.featured.setVisibility(View.VISIBLE);
             holder.freeSeats.setVisibility(View.VISIBLE);
             holder.freeSeats.setText(String.valueOf(event.getCapacity()));
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.plum));   // have to use context because eventAdapter isn't an activity
         }else{
             holder.featured.setVisibility(View.GONE);
             holder.freeSeats.setVisibility(View.GONE);
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.white));   // have to use context because eventAdapter isn't an activity
+
         }
 
         return convertView;
