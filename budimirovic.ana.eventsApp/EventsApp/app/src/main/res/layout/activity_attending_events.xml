@@ -3,14 +3,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AttendingEventsActivity">
+    tools:context=".InterestedEventsActivity">
 
-    <TextView
-        android:id="@+id/tvAttendingEvents"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/attendingEvents"
-        android:layout_gravity="center"
-        android:gravity="center"/>
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/noAttendingEv"
+            android:id="@+id/tvNoAttendEvents"
+            >
+        </TextView>
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvHeaderUpcoming"
+            android:text="@string/UpcomingEvents">
+        </TextView>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listUpcoming"
+            >
+        </ListView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvHeaderPast"
+            android:text="@string/PastEvents">
+        </TextView>
+        
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listPassed">
+        </ListView>
+
+    </FrameLayout>
+
+
 
 </LinearLayout>
