@@ -40,4 +40,5 @@
     <string name="capacity">Capacity</string>
     <string name="createEvent">create event</string>
     <string name="eventName">eventName</string>
+    <string name="noInterestedEvents">You have zero interested events.</string>
 </resources>

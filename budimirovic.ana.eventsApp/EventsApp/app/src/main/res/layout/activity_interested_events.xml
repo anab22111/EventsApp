@@ -5,12 +5,26 @@
     android:layout_height="match_parent"
     tools:context=".InterestedEventsActivity">
 
-    <TextView
-        android:id="@+id/tvInterestedEvents"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/interestedEvents"
-        android:layout_gravity="center"
-        android:gravity="center"/>
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tvInterestedEvents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/noInterestedEvents"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listInterested">
+        </ListView>
+
+    </FrameLayout>
+
+
 
 </LinearLayout>
