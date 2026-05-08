@@ -93,6 +93,11 @@ public class Event {
         this.imageResId = imageResId;
     }
 
+    public void setAverageRating(double averageRating){this.averageRating = averageRating;}
+
+    public void setRatingCount(int ratingCount){this.ratingCount = ratingCount;}
+
+
     public String getName() {
         return name;
     }

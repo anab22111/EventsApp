@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class RatingActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
     private TextView tvRateEvent, tvName;
@@ -50,8 +51,25 @@ public class RatingActivity extends AppCompatActivity implements View.OnClickLis
         // get name from Tag
         String name = view.getTag().toString();
 
-        // get event with thathatth name from AppData
+        // get event with that name from AppData
         Event event = AppData.findByName(name);
+
+        if(this.currRating == 0){
+            Toast.makeText(this, "Rate the event before confirming.", Toast.LENGTH_SHORT).show();
+        }else{
+            // update AverageRating and rating count
+            double currentAvg = event.getAverageRating();
+            int count = event.getRatingCount();
+
+            // get new average rating
+            double newAvg = ((currentAvg * count) + currRating) / (count + 1);
+
+            // 3. save new average rating and increase rating count
+            event.setAverageRating(newAvg);
+            event.setRatingCount(count + 1);
+            Toast.makeText(this, "Rating saved.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 
     @Override
