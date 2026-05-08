@@ -53,17 +53,42 @@ public class AppData {
     }
 
     public static ArrayList<Event> getSortedEvents() {
-        // array list to stream of data
-        return allEvents.stream()
-                .sorted(Comparator.comparing(Event::isPromoted, Comparator.reverseOrder()))   // sort by promotion of an event, in reverse because java takes false as the firsts
-                .collect(Collectors.toCollection(ArrayList::new));    // collect all the data from the stream
+        ArrayList<Event> sorted = new ArrayList<>();
+
+        // add promoted events first
+        for (Event e : allEvents) {
+            if (e.isPromoted()) {
+                sorted.add(e);
+            }
+        }
+
+        // add regular events after
+        for (Event e : allEvents) {
+            if (!e.isPromoted()) {
+                sorted.add(e);
+            }
+        }
+
+        return sorted;
     }
 
-    public static ArrayList<Event> getEventsByCategory(String category) {
-        return allEvents.stream()
-                .filter(e -> e.getCategory().equalsIgnoreCase(category)) // look only at events with the correct category
-                .sorted(Comparator.comparing(Event::getDateTime))        // sort by date
-                .collect(Collectors.toCollection(ArrayList::new));                           // return new list with sorted events with the forwarded category
+    public static ArrayList<Event> getEventsByCategory(String category) {  // return new list with sorted events with the forwarded category
+        ArrayList<Event> promoted = new ArrayList<>();
+        ArrayList<Event> regular = new ArrayList<>();
+
+        // go through list and only look at the events with th correct category
+        for (Event e : allEvents) {
+            if (e.getCategory().equalsIgnoreCase(category)) {
+                if (e.isPromoted()) {
+                    promoted.add(e); // if an event is promoted add tu promoted
+                } else {
+                    regular.add(e);  // if an event is regular add to regular
+                }
+            }
+        }
+        promoted.addAll(regular);    // add regular events to promoted - they are now at the bottom
+        return promoted;
+
     }
     public static Event findByName(String name) {
         //find event by name
