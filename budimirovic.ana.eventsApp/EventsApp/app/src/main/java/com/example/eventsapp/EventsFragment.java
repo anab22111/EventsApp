@@ -29,6 +29,9 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
     private ArrayList<Event> events;
     private EventAdapter adapter;
 
+    private String currentCategory = "All";   // used to remember what button was clicked(what category)
+    // initial button is All
+
     public EventsFragment(){}
 
 
@@ -118,11 +121,15 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             adapter.setEvents(AppData.getEventsByCategory("Exhibition"));
 
+            currentCategory = "Exhibition";
+
         }else if(view.getId() == R.id.btnMarathon){
 
             btnMarathon.setBackgroundColor(getResources().getColor(R.color.plum));
 
             adapter.setEvents(AppData.getEventsByCategory("Marathon"));
+
+            currentCategory = "Marathon";
 
         }else if(view.getId() == R.id.btnFootball){
 
@@ -130,11 +137,15 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             adapter.setEvents(AppData.getEventsByCategory("Football"));
 
+            currentCategory = "Football";
+
         }else if(view.getId() == R.id.btnFestival){
 
             btnFestival.setBackgroundColor(getResources().getColor(R.color.plum));
 
             adapter.setEvents(AppData.getEventsByCategory("Festival"));
+
+            currentCategory = "Festival";
 
         }else if(view.getId() == R.id.btnParty){
 
@@ -142,11 +153,15 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             adapter.setEvents(AppData.getEventsByCategory("Party"));
 
+            currentCategory = "Party";
+
         }else if(view.getId() == R.id.btnStandUpTheater){
 
             btnStandUpTheater.setBackgroundColor(getResources().getColor(R.color.plum));
 
             adapter.setEvents(AppData.getEventsByCategory("Stand-Up & Theater"));
+
+            currentCategory = "Stand-Up & Theater";
 
         }else if(view.getId() == R.id.btnAll){
 
@@ -154,11 +169,15 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             adapter.setEvents(AppData.getSortedEvents());
 
+            currentCategory = "All";
+
         }else if(view.getId() == R.id.btnConcert){
 
             btnConcert.setBackgroundColor(getResources().getColor(R.color.plum));
 
             adapter.setEvents(AppData.getEventsByCategory("Concert"));
+
+            currentCategory = "Concert";
 
         }else if(view.getId() == R.id.btnAddEvent){
             // go to CreateEventActivity
@@ -184,12 +203,16 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
         super.onResume();
         // check to see if adapter exists
         if (adapter != null) {
-            // update data set/list
-            adapter.notifyDataSetChanged();
+            // get adapter to update/sort list by category
+            if (currentCategory.equals("All")) {
+                adapter.setEvents(AppData.getSortedEvents());
+            } else {
+                // get promoted events at the top
+                adapter.setEvents(AppData.getEventsByCategory(currentCategory));
+            }
         }
 
-
-
-
+        // notify list that it has been modified
+        adapter.notifyDataSetChanged();
     }
 }
