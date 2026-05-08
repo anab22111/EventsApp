@@ -3,49 +3,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".InterestedEventsActivity">
+    tools:context=".InterestedEventsActivity"
+    android:orientation="vertical">
 
-    <FrameLayout
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/noAttendingEv"
+        android:id="@+id/tvNoAttendEvents"
+        >
+    </TextView>
+
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:id="@+id/tvHeaderUpcoming"
+        android:text="@string/UpcomingEvents">
+    </TextView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/noAttendingEv"
-            android:id="@+id/tvNoAttendEvents"
-            >
-        </TextView>
-        
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvHeaderUpcoming"
-            android:text="@string/UpcomingEvents">
-        </TextView>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listUpcoming"
+        >
+    </ListView>
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/listUpcoming"
-            >
-        </ListView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvHeaderPast"
+        android:text="@string/PastEvents">
+    </TextView>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvHeaderPast"
-            android:text="@string/PastEvents">
-        </TextView>
-        
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/listPassed">
-        </ListView>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listPassed">
+    </ListView>
 
-    </FrameLayout>
 
 
 

@@ -12,7 +12,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 public class AttendingEventsActivity extends AppCompatActivity {
-    private TextView tvHeaderUpcoming, tvHeaderPast;
+    private TextView tvHeaderUpcoming, tvHeaderPast, tvNoEvents;
     private ListView lvPast, lvUpcoming;
     private EventAdapter adapterUpcoming, adapterPast;
     private ArrayList<Event> listUpcoming, listPast;
@@ -26,6 +26,7 @@ public class AttendingEventsActivity extends AppCompatActivity {
         tvHeaderUpcoming = findViewById(R.id.tvHeaderUpcoming);
         lvPast = findViewById(R.id.listPassed);
         lvUpcoming = findViewById(R.id.listUpcoming);
+        tvNoEvents = findViewById(R.id.tvNoAttendEvents);
         listUpcoming = new ArrayList<>();
         listPast = new ArrayList<>();
 
@@ -51,9 +52,11 @@ public class AttendingEventsActivity extends AppCompatActivity {
         // check if lists are empty
         if(listUpcoming.isEmpty()){tvHeaderUpcoming.setVisibility(View.GONE);}  // hide header
         if(listPast.isEmpty()){tvHeaderPast.setVisibility(View.GONE);}   // hide header
-
-
-
+        if(listUpcoming.isEmpty() && listPast.isEmpty()){
+            tvNoEvents.setVisibility(View.VISIBLE);
+        }else{
+            tvNoEvents.setVisibility(View.GONE);
+        }
 
     }
 }
