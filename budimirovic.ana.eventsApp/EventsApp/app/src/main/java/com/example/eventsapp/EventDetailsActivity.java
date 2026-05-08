@@ -38,7 +38,15 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         tvCategory.setText(event.getCategory());
         tvDescription.setText(event.getDescription());
         tvLocation.setText(event.getLocation());
-        tvRating.setText("No rating yet");
+
+        if(event.getAverageRating() == 0){    // if there is no rating
+            tvRating.setText("No rating yet");
+        }else{        // else
+            String ratingStr = String.format("%.1f", event.getAverageRating());
+            tvRating.setText("Rating :" + ratingStr);
+        }
+
+
         tvDateTime.setText(event.getDateTime());
 
         // get correct image for the category
@@ -64,16 +72,25 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
 
         if(view.getId() == R.id.btnInterested){
             // get event from tag
-            Event event = AppData.findByName(btnInterested.getTag().toString());
+            Event event = AppData.findByName(view.getTag().toString());
 
-            AppData.interestedEvents.add(event);
-            Toast.makeText(EventDetailsActivity.this, "Added to interested.", Toast.LENGTH_SHORT).show();
+            if (!AppData.interestedEvents.contains(event)) {
+                AppData.interestedEvents.add(event);
+                Toast.makeText(this, "Added to interested.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Already in interested list.", Toast.LENGTH_SHORT).show();
+            }
+
         }else if(view.getId() == R.id.btnAttending){
             // get event from tag
-            Event event = AppData.findByName(btnInterested.getTag().toString());
+            Event event = AppData.findByName(view.getTag().toString());
 
-            AppData.attendingEvents.add(event);
-            Toast.makeText(EventDetailsActivity.this, "You have registered for the event.", Toast.LENGTH_SHORT).show();
+            if (!AppData.attendingEvents.contains(event)) {
+                AppData.attendingEvents.add(event);
+                Toast.makeText(this, "You have registered for the event.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "You have already registered for the event.", Toast.LENGTH_SHORT).show();
+            }
 
         }
 
@@ -95,6 +112,8 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             imageRes = R.drawable.festival;
         }else if(category.equals("Concert")){
             imageRes = R.drawable.concert;
+        }else if(category.equals("Party")) {
+            imageRes = R.drawable.party;
         }
 
         return imageRes;

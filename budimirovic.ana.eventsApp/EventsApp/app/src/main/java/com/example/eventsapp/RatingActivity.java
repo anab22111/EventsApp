@@ -25,7 +25,7 @@ public class RatingActivity extends AppCompatActivity implements View.OnClickLis
         // get name of event
         String name = getIntent().getStringExtra("nameOfEvent");
 
-        tvName = findViewById(R.id.tvRate);
+        tvName = findViewById(R.id.tvName);
         tvName.setText(name);   // set name of event
 
         star1 = findViewById(R.id.star1);
