@@ -62,6 +62,17 @@
             android:visibility="gone">
         </TextView>
 
+<!--        used for attending event-->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnRate"
+            android:text="@string/rate"
+            android:visibility="gone"
+            android:layout_gravity="end">
+        </Button>
+
+
 
     </LinearLayout>
 

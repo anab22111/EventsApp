@@ -46,4 +46,5 @@
     <string name="PastEvents">Passed events</string>
     <string name="interested">interested</string>
     <string name="attending">attending</string>
+    <string name="rate">rate</string>
 </resources>
