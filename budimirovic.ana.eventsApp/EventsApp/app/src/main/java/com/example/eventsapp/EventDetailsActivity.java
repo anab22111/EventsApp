@@ -40,7 +40,10 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         tvLocation.setText(event.getLocation());
         tvRating.setText("No rating yet");
         tvDateTime.setText(event.getDateTime());
-        image.setImageResource(R.drawable.marathon);
+
+        // get correct image for the category
+        int imageRes = getImageRes(event.getCategory());
+        image.setImageResource(imageRes);
 
         if(event.isPromoted()){
             tvFreeSeats.setText("Slobodnih mesta: " + event.getCapacity()+"/"+event.getCapacity());
@@ -65,5 +68,26 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
 
         }
 
+    }
+
+    public int getImageRes(String category){
+        int imageRes = 0;
+        if(category.equals("Marathon")){
+            imageRes = R.drawable.marathon;
+        }else if(category.equals("Festival")){
+            imageRes = R.drawable.festival;
+        }else if(category.equals("Football")){
+            imageRes = R.drawable.football;
+        }else if(category.equals("Exhibition")){
+            imageRes = R.drawable.exhibition;
+        }else if(category.equals("Stand-Up & Theater")){
+            imageRes = R.drawable.standup;
+        }else if(category.equals("Festival")){
+            imageRes = R.drawable.festival;
+        }else if(category.equals("Concert")){
+            imageRes = R.drawable.concert;
+        }
+
+        return imageRes;
     }
 }
