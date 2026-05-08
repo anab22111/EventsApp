@@ -47,4 +47,6 @@
     <string name="interested">interested</string>
     <string name="attending">attending</string>
     <string name="rate">rate</string>
+    <string name="rateEvent">Rate event</string>
+    <string name="confirmRt">Confirm rating</string>
 </resources>
