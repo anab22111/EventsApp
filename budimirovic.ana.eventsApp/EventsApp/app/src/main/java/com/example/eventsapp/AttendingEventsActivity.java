@@ -51,7 +51,7 @@ public class AttendingEventsActivity extends AppCompatActivity implements View.O
             // get View for one row
             View row = adapter.getView(i, null, null);   // "make" view for an event from attendingEvents on index i
 
-            // hide image, featured and color, category, freeSeats
+            // hide image, featured, color, category, freeSeats
             row.findViewById(R.id.eventImage).setVisibility(View.GONE);
             row.findViewById(R.id.tvPromoted).setVisibility(View.GONE);
             row.setBackgroundResource(android.R.color.white);

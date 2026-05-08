@@ -52,6 +52,8 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             tvFreeSeats.setVisibility(View.GONE);
         }
 
+        btnInterested.setTag(event.getName());  // set Tags so that the event is transferred to onClick()
+        btnAttending.setTag(event.getName());
         btnInterested.setOnClickListener(this);
         btnAttending.setOnClickListener(this);
 
@@ -61,9 +63,16 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
 
         if(view.getId() == R.id.btnInterested){
-            Toast.makeText(EventDetailsActivity.this, "Added to interested.", Toast.LENGTH_SHORT).show();
+            // get event from tag
+            Event event = AppData.findByName(btnInterested.getTag().toString());
 
+            AppData.interestedEvents.add(event);
+            Toast.makeText(EventDetailsActivity.this, "Added to interested.", Toast.LENGTH_SHORT).show();
         }else if(view.getId() == R.id.btnAttending){
+            // get event from tag
+            Event event = AppData.findByName(btnInterested.getTag().toString());
+
+            AppData.attendingEvents.add(event);
             Toast.makeText(EventDetailsActivity.this, "You have registered for the event.", Toast.LENGTH_SHORT).show();
 
         }

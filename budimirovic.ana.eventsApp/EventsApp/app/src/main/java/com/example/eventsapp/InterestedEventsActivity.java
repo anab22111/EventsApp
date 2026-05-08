@@ -29,6 +29,9 @@ public class InterestedEventsActivity extends AppCompatActivity implements Adapt
         // get data - list interestedEvents for AppDAta
         ArrayList<Event> listInterestedEvents = new ArrayList<>(AppData.interestedEvents);
 
+        // sort list
+        listInterestedEvents.sort((e1, e2) -> Boolean.compare(e2.isPromoted(), e1.isPromoted()));
+
         // make adapter for real data
         adapter = new EventAdapter(this, listInterestedEvents);
 
