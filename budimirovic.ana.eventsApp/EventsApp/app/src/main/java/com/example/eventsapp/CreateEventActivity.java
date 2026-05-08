@@ -50,7 +50,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         // connect adapter and spinner
         spinner.setAdapter(adapter);
 
-        // set istener for checkbox
+        // set listener for checkbox
         checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 etCapacity.setVisibility(View.VISIBLE); // show if checked
