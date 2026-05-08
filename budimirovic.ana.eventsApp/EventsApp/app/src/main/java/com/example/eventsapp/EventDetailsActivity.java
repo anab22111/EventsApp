@@ -40,7 +40,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         tvLocation.setText(event.getLocation());
         tvRating.setText("No rating yet");
         tvDateTime.setText(event.getDateTime());
-        image.setImageResource(R.drawable.marathon_runner);
+        image.setImageResource(R.drawable.marathon);
 
         if(event.isPromoted()){
             tvFreeSeats.setText("Slobodnih mesta: " + event.getCapacity()+"/"+event.getCapacity());

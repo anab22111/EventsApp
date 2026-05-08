@@ -2,18 +2,15 @@ package com.example.eventsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -77,6 +74,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             int capacity = 0;
 
 
+
             // if any of these fields are empty send toast message and dont create event
             if(name.isEmpty() || dateTime.isEmpty() || location.isEmpty()){
                 Toast.makeText(CreateEventActivity.this, "Fill in all the mandatory fields.", Toast.LENGTH_SHORT).show();
@@ -106,12 +104,15 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             // TO DO ?????
             // all fields field, check if format of DateTime is correct
 
+            // get correct image for the category
+            int image = getImageRes(category);
+
             // create event
             Event event;
             if(checkbox.isChecked()){    // create promoted event
-                event = EventFactory.createPromotedEvent(name, description, location, dateTime, category, R.drawable.marathon_runner, capacity);
+                event = EventFactory.createPromotedEvent(name, description, location, dateTime, category, image, capacity);
             }else{     // create regular event
-                event = EventFactory.createRegularEvent(name, description, location, dateTime, category, R.drawable.marathon_runner);
+                event = EventFactory.createRegularEvent(name, description, location, dateTime, category, image);
             }
 
             AppData.allEvents.add(event);    // add Event to list
@@ -121,6 +122,27 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
         }
     }
+
+    public int getImageRes(String category){
+        int imageRes = 0;
+        if(category.equals("Marathon")){
+            imageRes = R.drawable.marathon;
+        }else if(category.equals("Festival")){
+            imageRes = R.drawable.festival;
+        }else if(category.equals("Football")){
+            imageRes = R.drawable.football;
+        }else if(category.equals("Exhibition")){
+            imageRes = R.drawable.exhibition;
+        }else if(category.equals("Stand-Up & Theater")){
+            imageRes = R.drawable.standup;
+        }else if(category.equals("Festival")){
+            imageRes = R.drawable.festival;
+        }else if(category.equals("Concert")){
+            imageRes = R.drawable.concert;
+        }
+
+        return imageRes;
+     }
 
 
 }
