@@ -12,6 +12,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText etEventName, etDescription, etLocation, etDateTime, etCapacity;
@@ -74,7 +79,6 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             int capacity = 0;
 
 
-
             // if any of these fields are empty send toast message and dont create event
             if(name.isEmpty() || dateTime.isEmpty() || location.isEmpty()){
                 Toast.makeText(CreateEventActivity.this, "Fill in all the mandatory fields.", Toast.LENGTH_SHORT).show();
@@ -101,8 +105,21 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 }
             }
 
-            // TO DO ?????
             // all fields field, check if format of DateTime is correct
+
+            // create format for date and time
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy. HH:mm", Locale.getDefault());
+
+            sdf.setLenient(false);   // false, so that java doesn't correct the input automatically
+
+            try {
+                Date date = sdf.parse(dateTime);    // try to pare dateTime with created format
+                // if it passes its correct
+            } catch (ParseException e) {
+                //etDateTime.setError("Format must be: dd.MM.yyyy HH:mm");   // if there is an exception, input is wrong
+                Toast.makeText(this, "Wrong date and time format. Try again.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             // get correct image for the category
             int image = getImageRes(category);
@@ -135,10 +152,10 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             imageRes = R.drawable.exhibition;
         }else if(category.equals("Stand-Up & Theater")){
             imageRes = R.drawable.standup;
-        }else if(category.equals("Festival")){
-            imageRes = R.drawable.festival;
         }else if(category.equals("Concert")){
             imageRes = R.drawable.concert;
+        }else if(category.equals("Party")){
+            imageRes = R.drawable.party;
         }
 
         return imageRes;

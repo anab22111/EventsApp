@@ -113,10 +113,11 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onClick(View view) {
 
-        // if a button is clicked reset the color of all buttons
-        resetColors();
+
 
         if(view.getId() == R.id.btnExhibition){
+            // if a button is clicked reset the color of all buttons
+            resetColors();
             btnExhibition.setBackgroundColor(getResources().getColor(R.color.plum));
 
             adapter.setEvents(AppData.getEventsByCategory("Exhibition"));
@@ -124,6 +125,8 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             currentCategory = "Exhibition";
 
         }else if(view.getId() == R.id.btnMarathon){
+            // if a button is clicked reset the color of all buttons
+            resetColors();
 
             btnMarathon.setBackgroundColor(getResources().getColor(R.color.plum));
 
@@ -132,6 +135,8 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             currentCategory = "Marathon";
 
         }else if(view.getId() == R.id.btnFootball){
+            // if a button is clicked reset the color of all buttons
+            resetColors();
 
             btnFootball.setBackgroundColor(getResources().getColor(R.color.plum));
 
@@ -140,6 +145,8 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             currentCategory = "Football";
 
         }else if(view.getId() == R.id.btnFestival){
+            // if a button is clicked reset the color of all buttons
+            resetColors();
 
             btnFestival.setBackgroundColor(getResources().getColor(R.color.plum));
 
@@ -148,6 +155,8 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             currentCategory = "Festival";
 
         }else if(view.getId() == R.id.btnParty){
+            // if a button is clicked reset the color of all buttons
+            resetColors();
 
             btnParty.setBackgroundColor(getResources().getColor(R.color.plum));
 
@@ -156,6 +165,8 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             currentCategory = "Party";
 
         }else if(view.getId() == R.id.btnStandUpTheater){
+            // if a button is clicked reset the color of all buttons
+            resetColors();
 
             btnStandUpTheater.setBackgroundColor(getResources().getColor(R.color.plum));
 
@@ -164,6 +175,8 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             currentCategory = "Stand-Up & Theater";
 
         }else if(view.getId() == R.id.btnAll){
+            // if a button is clicked reset the color of all buttons
+            resetColors();
 
             btnAll.setBackgroundColor(getResources().getColor(R.color.plum));
 
@@ -172,6 +185,8 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             currentCategory = "All";
 
         }else if(view.getId() == R.id.btnConcert){
+            // if a button is clicked reset the color of all buttons
+            resetColors();
 
             btnConcert.setBackgroundColor(getResources().getColor(R.color.plum));
 
@@ -188,15 +203,15 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     public void resetColors(){
-        btnExhibition.setBackgroundColor(getResources().getColor(R.color.purple_200));
-        btnFootball.setBackgroundColor(getResources().getColor(R.color.purple_200));
-        btnMarathon.setBackgroundColor(getResources().getColor(R.color.purple_200));
-        btnFestival.setBackgroundColor(getResources().getColor(R.color.purple_200));
-        btnParty.setBackgroundColor(getResources().getColor(R.color.purple_200));
-        btnStandUpTheater.setBackgroundColor(getResources().getColor(R.color.purple_200));
-        btnAll.setBackgroundColor(getResources().getColor(R.color.purple_200));
-        btnAddEvent.setBackgroundColor(getResources().getColor(R.color.purple_200));
-        btnConcert.setBackgroundColor(getResources().getColor(R.color.purple_200));
+        btnExhibition.setBackgroundColor(getResources().getColor(R.color.purple_500));
+        btnFootball.setBackgroundColor(getResources().getColor(R.color.purple_500));
+        btnMarathon.setBackgroundColor(getResources().getColor(R.color.purple_500));
+        btnFestival.setBackgroundColor(getResources().getColor(R.color.purple_500));
+        btnParty.setBackgroundColor(getResources().getColor(R.color.purple_500));
+        btnStandUpTheater.setBackgroundColor(getResources().getColor(R.color.purple_500));
+        btnAll.setBackgroundColor(getResources().getColor(R.color.purple_500));
+        btnAddEvent.setBackgroundColor(getResources().getColor(R.color.purple_500));
+        btnConcert.setBackgroundColor(getResources().getColor(R.color.purple_500));
     }
     @Override
     public void onResume() {   // when back to fragment refresh the list - needed when coming back from CreateEventActivity

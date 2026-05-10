@@ -91,7 +91,7 @@ public class EventAdapter extends BaseAdapter {
             holder.featured.setVisibility(View.VISIBLE);
             holder.freeSeats.setVisibility(View.VISIBLE);
             holder.freeSeats.setText("Slobodnih mesta "+String.valueOf(event.getCapacity())+"/"+String.valueOf(event.getCapacity()));
-            convertView.setBackgroundColor(context.getResources().getColor(R.color.plum));   // have to use context because eventAdapter isn't an activity
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.light_gray));   // have to use context because eventAdapter isn't an activity
         }else{
             holder.featured.setVisibility(View.GONE);
             holder.freeSeats.setVisibility(View.GONE);

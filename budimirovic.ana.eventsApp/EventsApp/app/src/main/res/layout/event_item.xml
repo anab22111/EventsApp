@@ -17,8 +17,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvPromoted"
             android:text="@string/featured"
-            android:shadowColor="@color/purple_200"
-            android:visibility="gone">
+            android:background="@color/gray"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            >
         </TextView>
 
         <ImageView
@@ -38,12 +40,15 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tvName">
+            android:id="@+id/tvName"
+            android:textStyle="bold"
+            android:textSize="15sp">
         </TextView>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tvCategory">
+            android:id="@+id/tvCategory"
+            android:textColor="@color/purple_500">
         </TextView>
         <TextView
             android:layout_width="match_parent"

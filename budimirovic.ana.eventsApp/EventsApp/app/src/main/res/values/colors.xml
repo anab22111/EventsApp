@@ -11,5 +11,9 @@
     <color name="purple">#9370DB</color>
     <color name="plum">#DDA0DD</color>
     <color name="orange">#FFA500</color>
+    <color name="light_gray">#DCDCDC</color>
+    <color name="gray">#696969</color>
+
+
 
 </resources>
