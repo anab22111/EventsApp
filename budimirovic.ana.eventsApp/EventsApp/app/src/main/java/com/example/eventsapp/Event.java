@@ -21,6 +21,8 @@ public class Event {
         this.capacity = capacity;
         this.isPromoted = isPromoted;
         this.category = category;
+        this.averageRating = 0;
+        this.ratingCount = 0;
     }
 
     // constructor for regular events
@@ -31,6 +33,8 @@ public class Event {
         this.dateTime = dateTime;
         this.imageResId = imageResId;
         this.category = category;
+        this.averageRating = 0;
+        this.ratingCount = 0;
     }
 
     public boolean isPast(){

@@ -64,7 +64,7 @@ public class RatingActivity extends AppCompatActivity implements View.OnClickLis
             // get new average rating
             double newAvg = ((currentAvg * count) + currRating) / (count + 1);
 
-            // 3. save new average rating and increase rating count
+            // save new average rating and increase rating count
             event.setAverageRating(newAvg);
             event.setRatingCount(count + 1);
             Toast.makeText(this, "Rating saved.", Toast.LENGTH_SHORT).show();

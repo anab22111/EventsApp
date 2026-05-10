@@ -113,8 +113,6 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onClick(View view) {
 
-
-
         if(view.getId() == R.id.btnExhibition){
             // if a button is clicked reset the color of all buttons
             resetColors();

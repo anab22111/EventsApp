@@ -39,12 +39,9 @@ public class EventAdapter extends BaseAdapter {
         return position;
     }
 
-    // VIEWHOLDER SABLON? ????!!!!!!!!!!!!!!!!!!!!
-
     // getView() returns View - one element of the list
     // position is the position in the list
     // convertView is one row of the list
-    // ViewGroup is
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
