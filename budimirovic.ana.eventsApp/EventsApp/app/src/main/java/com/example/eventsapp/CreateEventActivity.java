@@ -113,10 +113,10 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             sdf.setLenient(false);   // false, so that java doesn't correct the input automatically
 
             try {
-                Date date = sdf.parse(dateTime);    // try to pare dateTime with created format
+                Date date = sdf.parse(dateTime);    // try to parse dateTime with created format
                 // if it passes its correct
             } catch (ParseException e) {
-                //etDateTime.setError("Format must be: dd.MM.yyyy HH:mm");   // if there is an exception, input is wrong
+                // if there is an exception, input is wrong
                 Toast.makeText(this, "Wrong date and time format. Try again.", Toast.LENGTH_SHORT).show();
                 return;
             }
