@@ -2,6 +2,7 @@ package com.example.eventsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText etLoginUsername, etLoginPassword, etRegisterUsername, etRegisterPassword, etRegisterEmail;
     private TextView tvUsername, tvEmail, tvPassword;
 
+    SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // make database
         dbHelper helper = new dbHelper(this);
-        SQLiteDatabase db = helper.getWritableDatabase();
+        db = helper.getWritableDatabase();
 
         btnFirstLogin = findViewById(R.id.btnFirstLogin);
         btnSecondLogin = findViewById(R.id.btnSecondLogin);
@@ -95,24 +98,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String password = etRegisterPassword.getText().toString();
             String email = etRegisterEmail.getText().toString();
 
+            // CHECK EMAIL
+
+            // get hashed password
+            String hashedPassword = PasswordHasher.hashPassword(password);
+
             if(!username.isEmpty() && !password.isEmpty() && !email.isEmpty()){
-                Intent intent1 = new Intent(MainActivity.this,
-                        EventsActivity.class);
 
-                //create bundle to transfer data
-                Bundle bundle1 = new Bundle();
-                bundle1.putString("username", username);
-                bundle1.putString("email", email);
-                bundle1.putString("password", password);
+                // try to register user,  if not successful db.insert returns -1
+                long result = registerUser(username, hashedPassword, email);
 
-                //connecting bundle to intent
-                intent1.putExtras(bundle1);
+                if(result != -1){           // registration successful
 
-                //go to next activity
-                startActivity(intent1);
+                    Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+
+                    Intent intent1 = new Intent(MainActivity.this,
+                            EventsActivity.class);
+
+                    //create bundle to transfer data
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putString("username", username);
+                    bundle1.putString("email", email);
+                    bundle1.putString("password", password);
+
+                    //connecting bundle to intent
+                    intent1.putExtras(bundle1);
+
+                    //go to next activity
+                    startActivity(intent1);
+
+                }else{
+                    Toast.makeText(MainActivity.this, "Username or email already exists!", Toast.LENGTH_SHORT).show();
+                }
             }else{
-                Toast.makeText(MainActivity.this, "You need to fill in all the fields!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "You need to fill in all the fields.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private long registerUser(String username, String password, String email){
+
+        ContentValues values = new ContentValues();
+        values.put("username", username);
+        values.put("email", email);
+        values.put("password", password);
+
+        long result = db.insert("users", null, values);
+
+        return result;
     }
 }
