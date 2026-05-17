@@ -41,24 +41,28 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View view) {
 
+        String email = "";
+        String username = "";
+        String password = "";
+
+        //if there are arguments get them
+        if(getArguments() != null){
+            email = getArguments().getString("email");
+            username = getArguments().getString("username");
+            password = getArguments().getString("password");
+        }
+
+
         if(view.getId() == R.id.btnInterestedEvents){    //go to InterestedEventsActivity
+
             Intent intent = new Intent(getActivity(), InterestedEventsActivity.class);
+            intent.putExtra("username", username);
             startActivity(intent);
         }else if(view.getId() == R.id.btnAttendingEvents){    //go to AttendingEventsActivity
             Intent intent = new Intent(getActivity(), AttendingEventsActivity.class);
+            intent.putExtra("username", username);
             startActivity(intent);
         }else if(view.getId() == R.id.btnMyProfile){        //go to ProfileActivity
-
-            String email = "";
-            String username = "";
-            String password = "";
-
-            //if there are arguments get them
-            if(getArguments() != null){
-                email = getArguments().getString("email");
-                username = getArguments().getString("username");
-                password = getArguments().getString("password");
-            }
 
             //if email wasnt forwarded set to an empty string
             if(email == null){

@@ -17,6 +17,7 @@ public class InterestedEventsActivity extends AppCompatActivity implements Adapt
     private ListView listView;
     private TextView emptyView;
     private EventAdapter adapter;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +27,12 @@ public class InterestedEventsActivity extends AppCompatActivity implements Adapt
         listView = findViewById(R.id.listInterested);
         emptyView = findViewById(R.id.tvInterestedEvents);
 
-        // get data - list interestedEvents for AppDAta
-        ArrayList<Event> listInterestedEvents = new ArrayList<>(AppData.interestedEvents);
+        username = getIntent().getStringExtra("username");
 
-        // sort list
-        listInterestedEvents.sort((e1, e2) -> Boolean.compare(e2.isPromoted(), e1.isPromoted()));
+        dbHelper helper = new dbHelper(this);
+
+        // get data from db helper
+        ArrayList<Event> listInterestedEvents = new ArrayList<>(helper.getEventsByCommitment(username, "INTERESTED"));
 
         // make adapter for real data
         adapter = new EventAdapter(this, listInterestedEvents);

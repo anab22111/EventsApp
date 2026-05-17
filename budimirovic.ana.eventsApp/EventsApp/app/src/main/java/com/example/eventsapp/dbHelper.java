@@ -261,6 +261,51 @@ public class dbHelper extends SQLiteOpenHelper {
         return event;
     }
 
+
+    public ArrayList<Event> getEventsByCommitment(String username, String commitment){
+        ArrayList<Event> list = new ArrayList<>();
+        // open database
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        int userId = getUserId(db, username);
+        if (userId == -1) return list;    // if user has no events saved return empty list
+
+        // connect events and attendance with userId
+        String query = "SELECT e.* FROM events e " +         // all columns form events
+                "JOIN attendance a ON e.id = a.eventId " +   // connect tables where eventId is the same
+                "WHERE a.userId = ? AND a.commitment = ? " +    // filter new table - take only the ones with certain userId and commitment
+                "ORDER BY e.promoted DESC";                     // go through in descending oder by promoted
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), commitment});
+
+        if (cursor.moveToFirst()) {   // if there is a table
+            do {
+                // get all the columns from one row (event)
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+                String location = cursor.getString(cursor.getColumnIndexOrThrow("location"));
+                String dateTime = cursor.getString(cursor.getColumnIndexOrThrow("dateTime"));
+                String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+                int promoted = cursor.getInt(cursor.getColumnIndexOrThrow("promoted"));
+                int capacity = cursor.getInt(cursor.getColumnIndexOrThrow("capacity"));
+
+                int imageId = getImageRes(category);
+
+                if(promoted == 1){                  // make promoted event
+                    list.add(EventFactory.createPromotedEvent(name, description, location, dateTime, category, imageId, capacity));
+                }else{                               // make regular event
+                    list.add(EventFactory.createRegularEvent(name, description, location, dateTime, category, imageId));
+                }
+
+            } while (cursor.moveToNext()); // moveToNext moves to next row in table
+        }
+
+        cursor.close();
+
+        return list;
+
+    }
+
     public boolean checkIfAttendanceExists(String username, String eventName, String commitment) {
         SQLiteDatabase db = this.getReadableDatabase();
 
