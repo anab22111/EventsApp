@@ -1,6 +1,7 @@
 package com.example.eventsapp;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
     private TextView emptyView;
     private ArrayList<Event> events;
     private EventAdapter adapter;
+    private dbHelper dbHelper;
 
     private String currentCategory = "All";   // used to remember what button was clicked(what category)
     // initial button is All
@@ -45,8 +47,9 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
 
-        // get list from AppData, get sorted events so that promoted events are always at the beginning
-        events = new ArrayList<>(AppData.getSortedEvents());
+        // make db helper
+        dbHelper = new dbHelper(getContext());
+        events = new ArrayList<>(dbHelper.getSortedEvents());    // get list of events form dbHelper
 
         // make adapter for list
         adapter = new EventAdapter(getContext(), events);    // have to use getContext bc fragment isn't an Activity
@@ -60,7 +63,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
         emptyView = view.findViewById(R.id.tvNoUpcomingEvents);
         list.setEmptyView(emptyView);
 
-        // just findViewById doesnt work because fragment doesnt have that method, therefore need to use view
+        // just findViewById doesn't work because fragment doesnt have that method, therefore need to use view
         // get all elements
         btnExhibition = view.findViewById(R.id.btnExhibition);
         btnFootball = view.findViewById(R.id.btnFootball);
@@ -118,7 +121,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             resetColors();
             btnExhibition.setBackgroundColor(getResources().getColor(R.color.plum));
 
-            adapter.setEvents(AppData.getEventsByCategory("Exhibition"));
+            adapter.setEvents(dbHelper.getEventsByCategory("Exhibition"));
 
             currentCategory = "Exhibition";
 
@@ -128,7 +131,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             btnMarathon.setBackgroundColor(getResources().getColor(R.color.plum));
 
-            adapter.setEvents(AppData.getEventsByCategory("Marathon"));
+            adapter.setEvents(dbHelper.getEventsByCategory("Marathon"));
 
             currentCategory = "Marathon";
 
@@ -138,7 +141,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             btnFootball.setBackgroundColor(getResources().getColor(R.color.plum));
 
-            adapter.setEvents(AppData.getEventsByCategory("Football"));
+            adapter.setEvents(dbHelper.getEventsByCategory("Football"));
 
             currentCategory = "Football";
 
@@ -148,7 +151,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             btnFestival.setBackgroundColor(getResources().getColor(R.color.plum));
 
-            adapter.setEvents(AppData.getEventsByCategory("Festival"));
+            adapter.setEvents(dbHelper.getEventsByCategory("Festival"));
 
             currentCategory = "Festival";
 
@@ -158,7 +161,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             btnParty.setBackgroundColor(getResources().getColor(R.color.plum));
 
-            adapter.setEvents(AppData.getEventsByCategory("Party"));
+            adapter.setEvents(dbHelper.getEventsByCategory("Party"));
 
             currentCategory = "Party";
 
@@ -168,7 +171,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             btnStandUpTheater.setBackgroundColor(getResources().getColor(R.color.plum));
 
-            adapter.setEvents(AppData.getEventsByCategory("Stand-Up & Theater"));
+            adapter.setEvents(dbHelper.getEventsByCategory("Stand-Up & Theater"));
 
             currentCategory = "Stand-Up & Theater";
 
@@ -178,7 +181,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             btnAll.setBackgroundColor(getResources().getColor(R.color.plum));
 
-            adapter.setEvents(AppData.getSortedEvents());
+            adapter.setEvents(dbHelper.getSortedEvents());
 
             currentCategory = "All";
 
@@ -188,7 +191,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
             btnConcert.setBackgroundColor(getResources().getColor(R.color.plum));
 
-            adapter.setEvents(AppData.getEventsByCategory("Concert"));
+            adapter.setEvents(dbHelper.getEventsByCategory("Concert"));
 
             currentCategory = "Concert";
 
@@ -218,10 +221,10 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
         if (adapter != null) {
             // get adapter to update/sort list by category
             if (currentCategory.equals("All")) {
-                adapter.setEvents(AppData.getSortedEvents());
+                adapter.setEvents(dbHelper.getSortedEvents());
             } else {
                 // get promoted events at the top
-                adapter.setEvents(AppData.getEventsByCategory(currentCategory));
+                adapter.setEvents(dbHelper.getEventsByCategory(currentCategory));
             }
         }
 
