@@ -2,6 +2,8 @@ package com.example.eventsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -124,19 +126,27 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             // get correct image for the category
             int image = getImageRes(category);
 
-            // create event
-            Event event;
-            if(checkbox.isChecked()){    // create promoted event
-                event = EventFactory.createPromotedEvent(name, description, location, dateTime, category, image, capacity);
-            }else{     // create regular event
-                event = EventFactory.createRegularEvent(name, description, location, dateTime, category, image);
-            }
+            // check if event is promoted
+            int isPromoted = checkbox.isChecked() ? 1 : 0;
 
-            AppData.allEvents.add(event);    // add Event to list
+            // make helper and get database
+            dbHelper helper = new dbHelper(this);
+            SQLiteDatabase db = helper.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+
+            values.put("name", name);
+            values.put("description", description);
+            values.put("location", location);
+            values.put("dateTime", dateTime);
+            values.put("category", category);
+            values.put("promoted", isPromoted);
+            values.put("capacity", capacity);
+
+            db.insert("events", null, values);
 
             Toast.makeText(this, "Event successfully created.", Toast.LENGTH_SHORT).show();
             finish();
-
         }
     }
 

@@ -114,7 +114,7 @@ public class PasswordActivity extends AppCompatActivity implements View.OnClickL
         ContentValues values = new ContentValues();
         values.put("password", hashedNewPassword);
 
-        // db.update return how many rows have been modified
+        // db.update returns how many rows have been modified
         int rowsAffected = db.update("users", values, "id = ?", new String[]{String.valueOf(id)});
 
         return rowsAffected > 0;
