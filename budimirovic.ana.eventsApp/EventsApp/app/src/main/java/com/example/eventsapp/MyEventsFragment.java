@@ -58,10 +58,13 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener{
             Intent intent = new Intent(getActivity(), InterestedEventsActivity.class);
             intent.putExtra("username", username);
             startActivity(intent);
+
         }else if(view.getId() == R.id.btnAttendingEvents){    //go to AttendingEventsActivity
+
             Intent intent = new Intent(getActivity(), AttendingEventsActivity.class);
             intent.putExtra("username", username);
             startActivity(intent);
+
         }else if(view.getId() == R.id.btnMyProfile){        //go to ProfileActivity
 
             //if email wasnt forwarded set to an empty string

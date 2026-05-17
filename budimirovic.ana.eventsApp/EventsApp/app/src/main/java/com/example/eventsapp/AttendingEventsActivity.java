@@ -41,12 +41,20 @@ public class AttendingEventsActivity extends AppCompatActivity implements View.O
         boolean hasUpcoming = false;
         boolean hasPast = false;
 
+        dbHelper helper = new dbHelper(this);
+
+        // get username
+        String username = getIntent().getStringExtra("username");
+
+        // get attending list
+        ArrayList<Event> attendingEventsList = helper.getEventsByCommitment(username, "ATTENDING");
+
         // create adapter for attendingEvents list
-        EventAdapter adapter = new EventAdapter(this, (ArrayList<Event>) AppData.attendingEvents);
+        EventAdapter adapter = new EventAdapter(this, attendingEventsList);
 
         // go through list and separate passed and upcoming events
-        for (int i = 0; i < AppData.attendingEvents.size(); i++) {
-            Event e = AppData.attendingEvents.get(i);   // get event with index i
+        for (int i = 0; i < attendingEventsList.size(); i++) {
+            Event e = attendingEventsList.get(i);   // get event with index i
 
             // get View for one row
             View row = adapter.getView(i, null, null);   // "make" view for an event from attendingEvents on index i
@@ -69,9 +77,7 @@ public class AttendingEventsActivity extends AppCompatActivity implements View.O
                     btnRate.setTag(e.getName());                    // set tag to transfer name - tag is connected to button
                     btnRate.setOnClickListener(this);               // set listener
                 }
-
             }
-
             else {
                 hasUpcoming = true;
                 containerUpcoming.addView(row);
@@ -83,10 +89,9 @@ public class AttendingEventsActivity extends AppCompatActivity implements View.O
             }
         }
 
-
         tvHeaderUpcoming.setVisibility(hasUpcoming ? View.VISIBLE : View.GONE);
         tvHeaderPast.setVisibility(hasPast ? View.VISIBLE : View.GONE);
-        tvNoEvents.setVisibility(AppData.attendingEvents.isEmpty() ? View.VISIBLE : View.GONE);
+        tvNoEvents.setVisibility(attendingEventsList.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     @Override
