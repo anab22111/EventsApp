@@ -2,6 +2,7 @@ package com.example.eventsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,15 +14,29 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
     private TextView tvName, tvCategory, tvDescription, tvLocation, tvDateTime, tvRating, tvFreeSeats;
     private Button btnInterested, btnAttending;
     private ImageView image;
+    private String username;
+    private dbHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
 
-        String name = getIntent().getStringExtra("nameOfEvent");
+        Bundle bundle = getIntent().getExtras();
 
-        Event event = AppData.findByName(name);
+        String eventName = bundle.getString("nameOfEvent");
+        username = bundle.getString("username");
+
+        // get event form database
+        helper = new dbHelper(this);
+
+        Event event = helper.getEventByName(eventName);
+
+        if (event == null) {
+            Toast.makeText(this, "Event not found!", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
 
         tvName = findViewById(R.id.tvName);
         tvCategory = findViewById(R.id.tvCategory);
@@ -69,27 +84,43 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
+        // get event name from tag
+        String clickedEventName = view.getTag().toString();
 
         if(view.getId() == R.id.btnInterested){
-            // get event from tag
-            Event event = AppData.findByName(view.getTag().toString());
 
-            if (!AppData.interestedEvents.contains(event)) {
-                AppData.interestedEvents.add(event);
-                Toast.makeText(this, "Added to interested.", Toast.LENGTH_SHORT).show();
-            } else {
+            // check if user is already interested for clickedEventName
+            boolean exists = helper.checkIfAttendanceExists(username, clickedEventName, "INTERESTED");
+            
+            if(exists){     // user already interested
                 Toast.makeText(this, "Already in interested list.", Toast.LENGTH_SHORT).show();
+            }else{        // add event to interested
+
+                // try to insert attendance
+                boolean success = helper.insertAttendance(username, clickedEventName, "INTERESTED");
+                if (success) {
+                    Toast.makeText(this, "Added to interested.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Error updating database.", Toast.LENGTH_SHORT).show();
+                }
             }
 
         }else if(view.getId() == R.id.btnAttending){
-            // get event from tag
-            Event event = AppData.findByName(view.getTag().toString());
 
-            if (!AppData.attendingEvents.contains(event)) {
-                AppData.attendingEvents.add(event);
-                Toast.makeText(this, "You have registered for the event.", Toast.LENGTH_SHORT).show();
-            } else {
+            // check if user is already interested for clickedEventName
+            boolean exists = helper.checkIfAttendanceExists(username, clickedEventName, "ATTENDING");
+
+            if(exists){     // user already attending
                 Toast.makeText(this, "You have already registered for the event.", Toast.LENGTH_SHORT).show();
+            }else{        // add event to interested
+
+                // try to insert attendance
+                boolean success = helper.insertAttendance(username, clickedEventName, "ATTENDING");
+                if (success) {
+                    Toast.makeText(this, "You have registered for the event.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Error updating database.", Toast.LENGTH_SHORT).show();
+                }
             }
 
         }

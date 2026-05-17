@@ -96,9 +96,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String password = etRegisterPassword.getText().toString();
             String email = etRegisterEmail.getText().toString(); // CHECK EMAIL
 
-            String hashedPassword = PasswordHasher.hashPassword(password);   // get hashed password
-
             if(!username.isEmpty() && !password.isEmpty() && !email.isEmpty()){
+
+                String hashedPassword = PasswordHasher.hashPassword(password);   // get hashed password
+
 
                 // try to register user,  if not successful db.insert returns -1
                 long result = registerUser(username, hashedPassword, email);

@@ -1,5 +1,6 @@
 package com.example.eventsapp;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -224,6 +225,110 @@ public class dbHelper extends SQLiteOpenHelper {
         return list;
 
 
+    }
+
+    public Event getEventByName(String eventName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Event event = null;
+
+        Cursor cursor = db.rawQuery("SELECT * FROM events WHERE name = ?", new String[]{eventName});
+
+        if (cursor.moveToFirst()) {
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+            String location = cursor.getString(cursor.getColumnIndexOrThrow("location"));
+            String dateTime = cursor.getString(cursor.getColumnIndexOrThrow("dateTime"));
+            String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+            int promoted = cursor.getInt(cursor.getColumnIndexOrThrow("promoted"));
+            int capacity = cursor.getInt(cursor.getColumnIndexOrThrow("capacity"));
+            float avgRating = cursor.getFloat(cursor.getColumnIndexOrThrow("avgRating"));
+            int numberOfAttendees = cursor.getInt(cursor.getColumnIndexOrThrow("numberOfAttendees"));
+            int numberOfRatings = cursor.getInt(cursor.getColumnIndexOrThrow("numberOfRatings"));
+
+            int imageId = getImageRes(category);
+
+            if (promoted == 1) {
+                event = EventFactory.createPromotedEvent(name, description, location, dateTime, category, imageId, capacity);
+            } else {
+                event = EventFactory.createRegularEvent(name, description, location, dateTime, category, imageId);
+            }
+
+            event.setAverageRating(avgRating);
+            event.setNumberOfAttendees(numberOfAttendees);
+            event.setRatingCount(numberOfRatings);
+        }
+        cursor.close();
+        return event;
+    }
+
+    public boolean checkIfAttendanceExists(String username, String eventName, String commitment) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        int userId = getUserId(db, username);       // get user id
+
+        int eventId = getEventId(db, eventName);       // get event id
+
+        // prepare arguments for query
+        String[] columns = {"id"};
+        String selection = "userId = ? AND eventId = ? AND commitment = ?";
+        String[] selectionArgs = {String.valueOf(userId), String.valueOf(eventId), commitment};
+
+        // make query to find row with correct commitment, event and user id
+        Cursor cursor = db.query(
+                "attendance",      // name of table
+                columns,           // colons needed
+                selection,         // WHERE part
+                selectionArgs,     // values for WHERE
+                null, null, null   // groupBy, having, orderBy
+        );
+
+        // if user clicked attending/interested(commitment) cursor will have found the row and it will be 1, otherwise 0
+        boolean exists = cursor.getCount() > 0;   // getCount() returns number of rows
+        cursor.close();
+        return exists;
+    }
+
+    public boolean insertAttendance(String username, String eventName, String commitment) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        int userId = getUserId(db, username);       // get user id
+
+        int eventId = getEventId(db, eventName);       // get event id
+
+        if (userId == -1 || eventId == -1) return false;
+
+        // make contentvalues to insert new row
+        ContentValues values = new ContentValues();
+        values.put("userId", userId);
+        values.put("eventId", eventId);
+        values.put("commitment", commitment);
+
+        // override status
+        long result = db.insertWithOnConflict("attendance", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        return result != -1;
+    }
+
+    private int getUserId(SQLiteDatabase db, String username){
+
+        int id = -1;
+        Cursor userCursor = db.rawQuery("SELECT id FROM users WHERE username = ?", new String[]{username});
+        if (userCursor.moveToFirst()) {
+            id = userCursor.getInt(0);    // id is at column 0 always
+        }
+        userCursor.close();
+
+        return id;
+    }
+
+    private int getEventId(SQLiteDatabase db, String eventName){
+
+        int id = -1;
+        Cursor eventCursor = db.rawQuery("SELECT id FROM events WHERE name = ?", new String[]{eventName});
+        if (eventCursor.moveToFirst()) {
+            id = eventCursor.getInt(0);       // id is at column 0 always
+        }
+        eventCursor.close();
+        return id;
     }
 
     public int getImageRes(String category){

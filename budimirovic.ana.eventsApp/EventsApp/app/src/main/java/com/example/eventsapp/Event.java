@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 public class Event {
 
     private String name, description, location, dateTime, category;
-    private int imageResId, capacity, attendingCount, ratingCount;
+    private int imageResId, capacity, attendingCount, ratingCount, numbOfAttendees;
     private boolean isPromoted;
     private double averageRating;
 
@@ -23,6 +23,7 @@ public class Event {
         this.category = category;
         this.averageRating = 0;
         this.ratingCount = 0;
+        this.numbOfAttendees = 0;
     }
 
     // constructor for regular events
@@ -35,6 +36,8 @@ public class Event {
         this.category = category;
         this.averageRating = 0;
         this.ratingCount = 0;
+        this.numbOfAttendees = 0;
+
     }
 
     public boolean isPast(){
@@ -100,6 +103,7 @@ public class Event {
     public void setAverageRating(double averageRating){this.averageRating = averageRating;}
 
     public void setRatingCount(int ratingCount){this.ratingCount = ratingCount;}
+    public void setNumberOfAttendees(int num){this.numbOfAttendees = num;}
 
 
     public String getName() {
@@ -143,4 +147,8 @@ public class Event {
     public double getAverageRating() {
         return averageRating;
     }
+    public double getNumberOfAttendees() {
+        return numbOfAttendees;
+    }
 }
+

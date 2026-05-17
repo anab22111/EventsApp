@@ -30,6 +30,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
     private ArrayList<Event> events;
     private EventAdapter adapter;
     private dbHelper dbHelper;
+    private String username;
 
     private String currentCategory = "All";   // used to remember what button was clicked(what category)
     // initial button is All
@@ -105,9 +106,13 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
         // get event to transfer to next activity
         Event event = (Event) parent.getItemAtPosition(position);
+        Bundle bundle1 = getArguments();
+        String user = bundle1.getString("username");
 
-        // send only name
-        intent.putExtra("nameOfEvent", event.getName());
+        Bundle bundle = new Bundle();
+        bundle.putString("nameOfEvent", event.getName());           // send name of event
+        bundle.putString("username", user); // send username
+        intent.putExtras(bundle);
 
         // start Activity
         startActivity(intent);

@@ -39,9 +39,14 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
         btnMyEvents = findViewById(R.id.myEvents);
         btnFriends = findViewById(R.id.friends);
 
+        EventsFragment EventsFragment = new EventsFragment();
+        Bundle bundle1 = new Bundle();
+        bundle1.putString("username",username);
+        EventsFragment.setArguments(bundle1);
+
         //load EventsFragment at the beggining
         getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragmentContanier, new EventsFragment())
+                        .add(R.id.fragmentContanier, EventsFragment)
                                 .commit();
 
         btnEvents.setOnClickListener(this);
@@ -52,9 +57,20 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
 
         if(view.getId() == R.id.events){    //load fragment eventsFragment
+
+            // send username to eventsFragment
+            String username = tvUsername.getText().toString();
+
+            //sending data by setting arguments for the next fragment
+            EventsFragment EventsFragment = new EventsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("username",username);
+            EventsFragment.setArguments(bundle);
+
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentContanier, new EventsFragment())
+                    .replace(R.id.fragmentContanier, EventsFragment)
                     .commit();
+
         }else if(view.getId() == R.id.myEvents){    //load fragment myEventsFragment
 
             //sending data to myEventsFragment
