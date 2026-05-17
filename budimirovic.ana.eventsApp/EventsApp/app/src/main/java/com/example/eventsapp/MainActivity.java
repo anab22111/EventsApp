@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -69,39 +70,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tvUsername.setVisibility(View.VISIBLE);
             tvPassword.setVisibility(View.VISIBLE);
         }
+
         else if(view.getId() == R.id.btnSecondLogin){
+
             String username = etLoginUsername.getText().toString();
             String password = etLoginPassword.getText().toString();
 
-            if(username.equals("admin") && password.equals("admin")){
-                //intent for next activity
-                Intent intent = new Intent(MainActivity.this,
-                        EventsActivity.class);
+            if(!username.isEmpty() && !password.isEmpty()){
+                // check if user exists
+                int userId = checkUserLogin(username, password);
 
-                //bundle to transfer data
-                Bundle bundle = new Bundle();
-                bundle.putString("username", username);
-
-                //connecting bundle to intent
-                intent.putExtras(bundle);
-
-                //go to next activity
-                startActivity(intent);
-            }else if(!username.equals("admin")){
-                Toast.makeText(MainActivity.this, "Username doesn't exist!", Toast.LENGTH_SHORT).show();
-            }else if(!password.equals("admin")){
-                Toast.makeText(MainActivity.this, "Incorrect password!", Toast.LENGTH_SHORT).show();
+                if(userId != -1){          // if user exists
+                    Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
+                    goToNextActivity(username);
+                }else{
+                    Toast.makeText(this, "Incorrect password or username.", Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                Toast.makeText(MainActivity.this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
             }
         }
         else if(view.getId() == R.id.btnSecondRegister){
             String username = etRegisterUsername.getText().toString();
             String password = etRegisterPassword.getText().toString();
-            String email = etRegisterEmail.getText().toString();
+            String email = etRegisterEmail.getText().toString(); // CHECK EMAIL
 
-            // CHECK EMAIL
-
-            // get hashed password
-            String hashedPassword = PasswordHasher.hashPassword(password);
+            String hashedPassword = PasswordHasher.hashPassword(password);   // get hashed password
 
             if(!username.isEmpty() && !password.isEmpty() && !email.isEmpty()){
 
@@ -112,21 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent1 = new Intent(MainActivity.this,
-                            EventsActivity.class);
-
-                    //create bundle to transfer data
-                    Bundle bundle1 = new Bundle();
-                    bundle1.putString("username", username);
-                    bundle1.putString("email", email);
-                    bundle1.putString("password", password);
-
-                    //connecting bundle to intent
-                    intent1.putExtras(bundle1);
-
-                    //go to next activity
-                    startActivity(intent1);
-
+                    goToNextActivity(username);
                 }else{
                     Toast.makeText(MainActivity.this, "Username or email already exists!", Toast.LENGTH_SHORT).show();
                 }
@@ -147,4 +127,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         return result;
     }
+
+
+    private int checkUserLogin(String username, String password){
+
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE username = ?", new String[]{username});
+
+        if (cursor.moveToFirst()) {
+
+            // get position of columns
+            int idColumnIndex = cursor.getColumnIndex("id");
+            int passwordColumnIndex = cursor.getColumnIndex("password");
+
+            // get the id
+            int userId = cursor.getInt(idColumnIndex);
+
+            // get password
+            String hashedPasswordFromDb = cursor.getString(passwordColumnIndex);
+
+            // check if the password is correct
+            if (PasswordHasher.verifyPassword(password, hashedPasswordFromDb)) {
+                cursor.close();             // close cursor
+                return userId;             // return id of user
+            }
+        }
+
+        if (cursor != null) {     // user not found or password incorrect
+            cursor.close();
+        }
+
+        return -1; // return -1 if user doesn't exist or password is incorrect
+    }
+
+    private void goToNextActivity(String username){
+        //intent for next activity
+        Intent intent = new Intent(MainActivity.this,
+                EventsActivity.class);
+
+        //bundle to transfer data
+        Bundle bundle = new Bundle();
+        bundle.putString("username", username);
+
+        //connecting bundle to intent
+        intent.putExtras(bundle);
+
+        //go to next activity
+        startActivity(intent);
+    }
+
 }
