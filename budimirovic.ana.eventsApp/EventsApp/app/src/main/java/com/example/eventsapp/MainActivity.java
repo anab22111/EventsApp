@@ -20,6 +20,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // make database
+        dbHelper helper = new dbHelper(this);
+        helper.getWritableDatabase();
+
         btnFirstLogin = findViewById(R.id.btnFirstLogin);
         btnSecondLogin = findViewById(R.id.btnSecondLogin);
         btnFirstRegister = findViewById(R.id.btnFirstRegister);
