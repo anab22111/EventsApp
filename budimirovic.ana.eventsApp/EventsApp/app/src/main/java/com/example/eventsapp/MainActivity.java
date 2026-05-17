@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SQLiteDatabase db;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +107,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String password = etRegisterPassword.getText().toString();
             String email = etRegisterEmail.getText().toString();
 
+            // CHECK EMAIL
+
+            // get hashed password
+            String hashedPassword = PasswordHasher.hashPassword(password);
+
             if(!username.isEmpty() && !password.isEmpty() && !email.isEmpty()){
 
                 // check if email is in valid format
@@ -112,8 +119,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this, "Please enter a valid email address.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                String hashedPassword = PasswordHasher.hashPassword(password);   // get hashed password
 
                 // try to register user,  if not successful db.insert returns -1
                 long result = registerUser(username, hashedPassword, email);
@@ -143,8 +148,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         return result;
     }
-
-
     private int checkUserLogin(String username, String password){
 
         Cursor cursor = db.rawQuery("SELECT * FROM users WHERE username = ?", new String[]{username});
