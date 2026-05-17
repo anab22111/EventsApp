@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         else if(view.getId() == R.id.btnSecondRegister){
+            
             String username = etRegisterUsername.getText().toString();
             String password = etRegisterPassword.getText().toString();
             String email = etRegisterEmail.getText().toString(); // CHECK EMAIL

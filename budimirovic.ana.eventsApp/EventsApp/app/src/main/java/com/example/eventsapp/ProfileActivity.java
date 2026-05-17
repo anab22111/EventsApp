@@ -12,6 +12,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private TextView tvUsername, tvEmail;
     private Button btnPassword, btnEndSession;
     private String password;
+    private String username;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +21,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         //get email and username
         Bundle bundle = getIntent().getExtras();
 
-        String username = bundle.getString("username");
+        username = bundle.getString("username");
         String email = bundle.getString("email");
         password = bundle.getString("password");
 
@@ -56,7 +57,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
             // send password to next activity
             Bundle bundle = new Bundle();
-            bundle.putString("password", password);
+            bundle.putString("username", username);
 
             intent.putExtras(bundle);
 
