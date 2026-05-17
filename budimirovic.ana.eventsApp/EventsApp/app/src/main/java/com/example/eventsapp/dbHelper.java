@@ -73,6 +73,8 @@ public class dbHelper extends SQLiteOpenHelper {
                 "UNIQUE(userId, eventId));";
         db.execSQL(CreateRatingsTable);
 
+        insertEvents(db);
+
     }
 
     @Override
@@ -86,7 +88,66 @@ public class dbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onConfigure(SQLiteDatabase db) {
-        super.onConfigure(db);
         db.setForeignKeyConstraintsEnabled(true);
+        super.onConfigure(db);
+    }
+
+    private void insertEvents(SQLiteDatabase db){
+
+        // insert events into the table
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Ultra Europe', 'Music festival', 'Split, Croatia', '10.07.2026. 20:00', 'Festival', 1, 50000);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Champions League Final', 'Greatest final ever', 'Spain, Madrid', '25.08.2026. 21:00', 'Football', 1, 400000);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Exit', 'Biggest music festival in Serbia', 'Petrovaradin, Novi Sad', '15.07.2026. 18:00', 'Festival', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Things unfinished', 'Maja Momirov exhibition', 'Petrovaradin, Novi Sad', '20.12.2025. 18:00', 'Exhibition', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Fruska gora marathon', '49th Fruska Gora marathon', 'Fruska Gora, Popovica', '25.04.2026. 09:00', 'Marathon', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Mike Stand-up', 'First time in Niš', 'Niš, Serbia', '15.02.2024. 20:00', 'Stand-Up & Theater', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('NEON party', 'The best party is back!', 'Štark Arena, Belgrade', '05.02.2024. 20:00', 'Party', 1, 200);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Durmitor marathon', '50th Durmitor marathon', 'Durmitor, Montenegro', '25.08.2026. 09:00', 'Marathon', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Coldplay Live', 'Music of the Spheres World Tour', 'Wembley Stadium, London', '12.06.2026. 20:00', 'Concert', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Beer Fest', 'Belgrade traditional beer and music festival', 'Ušće, Belgrade', '15.08.2026. 18:00', 'Festival', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Techno Warehouse', 'Underground techno experience', 'Petrovaradin, Novi Sad', '05.12.2026. 23:00', 'Party', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Van Gogh Experience', 'Immersive digital art exhibition', 'Hala 4, Beogradski Sajam', '10.12.2026. 12:00', 'Exhibition', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Belgrade Marathon', '42km race through the city', 'Center, Belgrade', '17.05.2026. 08:00', 'Marathon', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Wine Fest 2024', 'Annual wine tasting event', 'City Center, Novi Sad', '15.03.2024. 14:00', 'Festival', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Državni Posao', 'Live comedy show with the famous trio', 'Srpsko narodno pozorište, Novi Sad', '15.11.2026. 20:00', 'Stand-Up & Theater', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Nikola Djuricko Show', 'Showbiz stand-up comedy', 'SNP, Novi Sad', '20.10.2026. 20:00', 'Stand-Up & Theater', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('Hamlet', 'Modern interpretation of Shakespeare', 'JDP, Belgrade', '25.11.2026. 20:00', 'Stand-Up & Theater', 0, 0);");
+
+        db.execSQL("INSERT INTO events (name, description, location, dateTime, category, promoted, capacity) " +
+                "VALUES ('World Cup Semi Final', 'Spain - France', 'USA, Miami', '30.11.2026. 20:00', 'Football', 0, 0);");
+
     }
 }

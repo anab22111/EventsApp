@@ -3,6 +3,7 @@ package com.example.eventsapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // make database
         dbHelper helper = new dbHelper(this);
-        helper.getWritableDatabase();
+        SQLiteDatabase db = helper.getWritableDatabase();
 
         btnFirstLogin = findViewById(R.id.btnFirstLogin);
         btnSecondLogin = findViewById(R.id.btnSecondLogin);
