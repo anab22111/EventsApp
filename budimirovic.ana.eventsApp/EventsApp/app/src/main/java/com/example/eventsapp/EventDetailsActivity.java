@@ -116,24 +116,32 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 Toast.makeText(this, "You have already registered for the event.", Toast.LENGTH_SHORT).show();
             }else{        // add event to interested
 
+                // get clicked event
+                Event event = helper.getEventByName(clickedEventName);
+                int freeSeats = 0;
+                // get number of free seats
+                if(event != null){
+                    freeSeats = event.getCapacity() - event.getNumberOfAttendees();
+                }
+
+                // check if there are any free seats left
+                if(freeSeats == 0){
+                    Toast.makeText(this, "Unfortunately, there are no free seats left.", Toast.LENGTH_SHORT).show();
+                    return;              // if there are no free seats don't insert new attendance and notify user
+                }
                 // try to insert attendance
                 boolean success = helper.insertAttendance(username, clickedEventName, "ATTENDING");
                 if (success) {
                     Toast.makeText(this, "You have registered for the event.", Toast.LENGTH_SHORT).show();
 
                     // update free seats
-                    Event updatedEvent = helper.getEventByName(clickedEventName);   // get event
-                    if (updatedEvent != null) {
-                        int freeSeats = updatedEvent.getCapacity() - updatedEvent.getNumberOfAttendees();
-                        tvFreeSeats.setText("Free seats: " + freeSeats+"/"+updatedEvent.getCapacity());
-                    }
+                    tvFreeSeats.setText("Free seats: " + freeSeats+"/" + event.getCapacity());
+
                 } else {
                     Toast.makeText(this, "Error updating database.", Toast.LENGTH_SHORT).show();
                 }
             }
-
         }
-
     }
 
     public int getImageRes(String category){

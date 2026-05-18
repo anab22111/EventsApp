@@ -237,8 +237,6 @@ public class dbHelper extends SQLiteOpenHelper {
 
         cursor.close();
         return list;
-
-
     }
 
     public Event getEventByName(String eventName) {
