@@ -174,14 +174,21 @@ public class dbHelper extends SQLiteOpenHelper {
                 String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
                 int promoted = cursor.getInt(cursor.getColumnIndexOrThrow("promoted"));
                 int capacity = cursor.getInt(cursor.getColumnIndexOrThrow("capacity"));
+                int numberOfAttendees = cursor.getInt(cursor.getColumnIndexOrThrow("numberOfAttendees"));
 
                 int imageId = getImageRes(category);
 
+                Event event;
+
                 if(promoted == 1){                  // make promoted event
-                    list.add(EventFactory.createPromotedEvent(name, description, location, dateTime, category, imageId, capacity));
+                    event = EventFactory.createPromotedEvent(name, description, location, dateTime, category, imageId, capacity);
                 }else{                               // make regular event
-                    list.add(EventFactory.createRegularEvent(name, description, location, dateTime, category, imageId));
+                    event = EventFactory.createRegularEvent(name, description, location, dateTime, category, imageId);
                 }
+
+                event.setNumberOfAttendees(numberOfAttendees);
+
+                list.add(event);
 
             } while (cursor.moveToNext()); // moveToNext moves to next row in table
         }
@@ -209,14 +216,21 @@ public class dbHelper extends SQLiteOpenHelper {
                 String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
                 int promoted = cursor.getInt(cursor.getColumnIndexOrThrow("promoted"));
                 int capacity = cursor.getInt(cursor.getColumnIndexOrThrow("capacity"));
+                int numberOfAttendees = cursor.getInt(cursor.getColumnIndexOrThrow("numberOfAttendees"));
 
                 int imageId = getImageRes(category);
 
+                Event event;
+
                 if(promoted == 1){                  // make promoted event
-                    list.add(EventFactory.createPromotedEvent(name, description, location, dateTime, category, imageId, capacity));
+                    event = EventFactory.createPromotedEvent(name, description, location, dateTime, category, imageId, capacity);
                 }else{                               // make regular event
-                    list.add(EventFactory.createRegularEvent(name, description, location, dateTime, category, imageId));
+                    event = EventFactory.createRegularEvent(name, description, location, dateTime, category, imageId);
                 }
+
+                event.setNumberOfAttendees(numberOfAttendees);
+
+                list.add(event);
 
             } while (cursor.moveToNext()); // moveToNext moves to next row in table
         }
@@ -291,11 +305,18 @@ public class dbHelper extends SQLiteOpenHelper {
 
                 int imageId = getImageRes(category);
 
-                if(promoted == 1){                  // make promoted event
-                    list.add(EventFactory.createPromotedEvent(name, description, location, dateTime, category, imageId, capacity));
-                }else{                               // make regular event
-                    list.add(EventFactory.createRegularEvent(name, description, location, dateTime, category, imageId));
+                int numberOfAttendees = cursor.getInt(cursor.getColumnIndexOrThrow("numberOfAttendees"));
+
+                Event event;
+
+                if(promoted == 1){
+                    event = EventFactory.createPromotedEvent(name, description, location, dateTime, category, imageId, capacity);
+                }else{
+                    event = EventFactory.createRegularEvent(name, description, location, dateTime, category, imageId);
                 }
+
+                event.setNumberOfAttendees(numberOfAttendees);
+                list.add(event);
 
             } while (cursor.moveToNext()); // moveToNext moves to next row in table
         }
@@ -340,9 +361,12 @@ public class dbHelper extends SQLiteOpenHelper {
 
         int eventId = getEventId(db, eventName);       // get event id
 
-        if (userId == -1 || eventId == -1) return false;
+        if (userId == -1 || eventId == -1) return false;         // user and event not found
 
-        // make contentvalues to insert new row
+        // get previous commitment of the event, before status is overridden
+        String previousCommitment = getPreviousCommitment(db, userId, eventId);
+
+        // make content values to insert new row
         ContentValues values = new ContentValues();
         values.put("userId", userId);
         values.put("eventId", eventId);
@@ -350,7 +374,43 @@ public class dbHelper extends SQLiteOpenHelper {
 
         // override status
         long result = db.insertWithOnConflict("attendance", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
+        // change number of attendees if needed
+
+        if (result != -1) {
+            if (previousCommitment == null) {
+                // if previous nothing, check if current is attending
+                if (commitment.equals("ATTENDING")) {
+                    // check if there are any free seats
+
+                    updateAttendeeCount(db, eventId, 1);    // increase number
+                }
+            } else {
+                // if previous isnt null, compare with interested and attending
+                if (previousCommitment.equals("INTERESTED") && commitment.equals("ATTENDING")) {
+                    updateAttendeeCount(db, eventId, 1);
+                } else if (previousCommitment.equals("ATTENDING") && commitment.equals("INTERESTED")) {
+                    updateAttendeeCount(db, eventId, -1);
+                }
+            }
+        }
+
         return result != -1;
+    }
+
+    private String getPreviousCommitment(SQLiteDatabase db, int userId, int eventId ){
+        String comm = null;
+
+        // from table get status, for correct userId and eventId
+        Cursor cursor = db.rawQuery("SELECT commitment FROM attendance WHERE userId = ? AND eventId = ?", new String[]{String.valueOf(userId), String.valueOf(eventId)});
+
+        if(cursor.moveToFirst()){
+            comm = cursor.getString(0);    // only commitment column selected, hence getString(0)
+        }
+        //if there is no row for eventId and userId comm remains be null
+
+        cursor.close();
+        return comm;
     }
 
     private int getUserId(SQLiteDatabase db, String username){
@@ -374,6 +434,10 @@ public class dbHelper extends SQLiteOpenHelper {
         }
         eventCursor.close();
         return id;
+    }
+
+    private void updateAttendeeCount(SQLiteDatabase db, int eventId, int amount) {
+        db.execSQL("UPDATE events SET numberOfAttendees = numberOfAttendees + (" + amount + ") WHERE id = ?", new String[]{String.valueOf(eventId)});
     }
 
     public int getImageRes(String category){

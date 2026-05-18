@@ -68,8 +68,10 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         int imageRes = getImageRes(event.getCategory());
         image.setImageResource(imageRes);
 
+        int freeSeats = event.getCapacity() - event.getNumberOfAttendees();
+
         if(event.isPromoted()){
-            tvFreeSeats.setText("Slobodnih mesta: " + event.getCapacity()+"/"+event.getCapacity());
+            tvFreeSeats.setText("Free seats" + freeSeats + "/" + event.getCapacity());
             tvFreeSeats.setVisibility(View.VISIBLE);
         }else{
             tvFreeSeats.setVisibility(View.GONE);
@@ -118,6 +120,13 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 boolean success = helper.insertAttendance(username, clickedEventName, "ATTENDING");
                 if (success) {
                     Toast.makeText(this, "You have registered for the event.", Toast.LENGTH_SHORT).show();
+
+                    // update free seats
+                    Event updatedEvent = helper.getEventByName(clickedEventName);   // get event
+                    if (updatedEvent != null) {
+                        int freeSeats = updatedEvent.getCapacity() - updatedEvent.getNumberOfAttendees();
+                        tvFreeSeats.setText("Free seats: " + freeSeats+"/"+updatedEvent.getCapacity());
+                    }
                 } else {
                     Toast.makeText(this, "Error updating database.", Toast.LENGTH_SHORT).show();
                 }

@@ -147,7 +147,7 @@ public class Event {
     public double getAverageRating() {
         return averageRating;
     }
-    public double getNumberOfAttendees() {
+    public int getNumberOfAttendees() {
         return numbOfAttendees;
     }
 }

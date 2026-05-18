@@ -51,8 +51,10 @@ public class RatingActivity extends AppCompatActivity implements View.OnClickLis
         // get name from Tag
         String name = view.getTag().toString();
 
-        // get event with that name from AppData
-        Event event = AppData.findByName(name);
+        dbHelper helper = new dbHelper(this);
+
+        // get event with that name form database
+        Event event = helper.getEventByName(name);
 
         if(this.currRating == 0){
             Toast.makeText(this, "Rate the event before confirming.", Toast.LENGTH_SHORT).show();

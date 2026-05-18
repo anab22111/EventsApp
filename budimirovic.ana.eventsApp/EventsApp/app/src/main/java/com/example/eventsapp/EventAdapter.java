@@ -73,7 +73,7 @@ public class EventAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Event event =events.get(position);
+        Event event = events.get(position);
 
         holder.image.setImageResource(event.getImageResId());
         holder.name.setText(event.getName());
@@ -87,7 +87,8 @@ public class EventAdapter extends BaseAdapter {
         if(event.isPromoted()){
             holder.featured.setVisibility(View.VISIBLE);
             holder.freeSeats.setVisibility(View.VISIBLE);
-            holder.freeSeats.setText("Slobodnih mesta "+String.valueOf(event.getCapacity())+"/"+String.valueOf(event.getCapacity()));
+            int freeSeats =event.getCapacity() - event.getNumberOfAttendees();
+            holder.freeSeats.setText("Free seats "+ freeSeats + "/" + String.valueOf(event.getCapacity()));
             convertView.setBackgroundColor(context.getResources().getColor(R.color.light_gray));   // have to use context because eventAdapter isn't an activity
         }else{
             holder.featured.setVisibility(View.GONE);
