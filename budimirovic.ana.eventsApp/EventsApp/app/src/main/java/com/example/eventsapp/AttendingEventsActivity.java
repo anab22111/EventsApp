@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 public class AttendingEventsActivity extends AppCompatActivity implements View.OnClickListener{
     private TextView tvHeaderUpcoming, tvHeaderPast, tvNoEvents;
     private LinearLayout containerPast, containerUpcoming;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +46,7 @@ public class AttendingEventsActivity extends AppCompatActivity implements View.O
         dbHelper helper = new dbHelper(this);
 
         // get username
-        String username = getIntent().getStringExtra("username");
+        username = getIntent().getStringExtra("username");
 
         // get attending list
         ArrayList<Event> attendingEventsList = helper.getEventsByCommitment(username, "ATTENDING");
@@ -97,12 +99,26 @@ public class AttendingEventsActivity extends AppCompatActivity implements View.O
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnRate) {
-
             // from tag get name
             String eventName = (String) view.getTag();
 
+            // get helper
+            dbHelper helper = new dbHelper(this);
+
+            // check if user already rated the event
+            boolean alreadyRated = helper.checkIfRatingExists(username, eventName);
+
+            if(alreadyRated){          // if already rated don't go to ratingActivity
+                Toast.makeText(this, "You have already rated this event.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             Intent intent = new Intent(this, RatingActivity.class);
-            intent.putExtra("nameOfEvent", eventName);
+            Bundle bundle = new Bundle();
+            bundle.putString("nameOfEvent", eventName);
+            bundle.putString("username", username);
+
+            intent.putExtras(bundle);
             startActivity(intent);
         }
 

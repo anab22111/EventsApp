@@ -88,6 +88,14 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
         // get event name from tag
         String clickedEventName = view.getTag().toString();
+        Event event =  helper.getEventByName(clickedEventName);
+
+        if (event == null) return;
+
+        // get FreeSeats for event
+        int capacity = event.getCapacity();
+        int attendees = event.getNumberOfAttendees();
+        int freeSeats = capacity - attendees;
 
         if(view.getId() == R.id.btnInterested){
 
@@ -98,10 +106,21 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 Toast.makeText(this, "Already in interested list.", Toast.LENGTH_SHORT).show();
             }else{        // add event to interested
 
+                // check if previous commitment was ATTENDING
+                boolean wasAttending = helper.checkIfAttendanceExists(username, clickedEventName, "ATTENDING");
+
                 // try to insert attendance
                 boolean success = helper.insertAttendance(username, clickedEventName, "INTERESTED");
                 if (success) {
+                    // if true, status changed to interested
                     Toast.makeText(this, "Added to interested.", Toast.LENGTH_SHORT).show();
+
+                    // update appearance
+                    if (wasAttending && event.isPromoted()) {
+                        int newFreeSeats = freeSeats + 1;
+                        tvFreeSeats.setText("Free seats: " + newFreeSeats + "/" + capacity);
+                    }
+
                 } else {
                     Toast.makeText(this, "Error updating database.", Toast.LENGTH_SHORT).show();
                 }
@@ -116,26 +135,19 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 Toast.makeText(this, "You have already registered for the event.", Toast.LENGTH_SHORT).show();
             }else{        // add event to interested
 
-                // get clicked event
-                Event event = helper.getEventByName(clickedEventName);
-                int freeSeats = 0;
-                // get number of free seats
-                if(event != null){
-                    freeSeats = event.getCapacity() - event.getNumberOfAttendees();
+                // check if there are any free seats left
+                if (event.isPromoted() && freeSeats <= 0) {                   // if event is promoted and there are no free seats don't insert new attendance and notify user
+                    Toast.makeText(this, "Unfortunately, there are no free seats left.", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
-                // check if there are any free seats left
-                if(freeSeats == 0){
-                    Toast.makeText(this, "Unfortunately, there are no free seats left.", Toast.LENGTH_SHORT).show();
-                    return;              // if there are no free seats don't insert new attendance and notify user
-                }
                 // try to insert attendance
                 boolean success = helper.insertAttendance(username, clickedEventName, "ATTENDING");
                 if (success) {
                     Toast.makeText(this, "You have registered for the event.", Toast.LENGTH_SHORT).show();
 
                     // update free seats
-                    tvFreeSeats.setText("Free seats: " + freeSeats+"/" + event.getCapacity());
+                    tvFreeSeats.setText("Free seats: " + (freeSeats - 1)+"/" + event.getCapacity());
 
                 } else {
                     Toast.makeText(this, "Error updating database.", Toast.LENGTH_SHORT).show();

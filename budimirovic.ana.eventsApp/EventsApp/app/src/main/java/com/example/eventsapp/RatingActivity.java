@@ -16,17 +16,20 @@ public class RatingActivity extends AppCompatActivity implements View.OnClickLis
     private CheckBox star1, star2, star3, star4, star5;
 
     private double currRating;
+    private String eventName, username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rating);
 
+        Bundle bundle = getIntent().getExtras();
         // get name of event
-        String name = getIntent().getStringExtra("nameOfEvent");
+        username = bundle.getString("username");
+        eventName = bundle.getString("nameOfEvent");
 
         tvName = findViewById(R.id.tvName);
-        tvName.setText(name);   // set name of event
+        tvName.setText(eventName);   // set name of event
 
         star1 = findViewById(R.id.star1);
         star2 = findViewById(R.id.star2);
@@ -35,7 +38,6 @@ public class RatingActivity extends AppCompatActivity implements View.OnClickLis
         star5 = findViewById(R.id.star5);
 
         btnConfirm = findViewById(R.id.btnConfirmRating);
-        btnConfirm.setTag(name);   // set tag to transfer name
 
         btnConfirm.setOnClickListener(this);
         star1.setOnCheckedChangeListener(this);
@@ -43,18 +45,14 @@ public class RatingActivity extends AppCompatActivity implements View.OnClickLis
         star3.setOnCheckedChangeListener(this);
         star4.setOnCheckedChangeListener(this);
         star5.setOnCheckedChangeListener(this);
-
     }
 
     @Override
     public void onClick(View view) {
-        // get name from Tag
-        String name = view.getTag().toString();
 
+        // get event with that name from database
         dbHelper helper = new dbHelper(this);
-
-        // get event with that name form database
-        Event event = helper.getEventByName(name);
+        Event event = helper.getEventByName(eventName);
 
         if(this.currRating == 0){
             Toast.makeText(this, "Rate the event before confirming.", Toast.LENGTH_SHORT).show();
@@ -70,6 +68,9 @@ public class RatingActivity extends AppCompatActivity implements View.OnClickLis
             event.setAverageRating(newAvg);
             event.setRatingCount(count + 1);
             Toast.makeText(this, "Rating saved.", Toast.LENGTH_SHORT).show();
+
+            // update ratings table
+            helper.insertRating(username, eventName, (int)currRating, newAvg);
             finish();
         }
     }
@@ -77,8 +78,8 @@ public class RatingActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-        int rating = 0;
         int id = buttonView.getId();
+        int rating = 0;
 
         // check what star was clicked
         if (id == R.id.star1) rating = 1;

@@ -384,7 +384,7 @@ public class dbHelper extends SQLiteOpenHelper {
                     updateAttendeeCount(db, eventId, 1);    // increase number
                 }
             } else {
-                // if previous isnt null, compare with interested and attending
+                // if previous isn't null, compare with interested and attending
                 if (previousCommitment.equals("INTERESTED") && commitment.equals("ATTENDING")) {
                     updateAttendeeCount(db, eventId, 1);
                 } else if (previousCommitment.equals("ATTENDING") && commitment.equals("INTERESTED")) {
@@ -436,6 +436,60 @@ public class dbHelper extends SQLiteOpenHelper {
 
     private void updateAttendeeCount(SQLiteDatabase db, int eventId, int amount) {
         db.execSQL("UPDATE events SET numberOfAttendees = numberOfAttendees + (" + amount + ") WHERE id = ?", new String[]{String.valueOf(eventId)});
+    }
+
+
+    public boolean checkIfRatingExists( String username, String eventName){
+        SQLiteDatabase db = this.getReadableDatabase();     // get database
+
+        int userId = getUserId(db, username);
+        int eventId = getEventId(db, eventName);
+
+        if (userId == -1 || eventId == -1) {       // if user or event isn't found
+            return false;
+        }
+
+
+        String query = "SELECT id FROM ratings WHERE userId = ? AND eventId = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId),String.valueOf(eventId)});
+
+        // check if there is a row
+        boolean exists = cursor.moveToFirst();  // if there is a row there is a rating
+
+        cursor.close();
+
+        return exists;
+    }
+
+    public boolean insertRating(String username, String eventName, int rating, double newAvg){
+        SQLiteDatabase db = this.getWritableDatabase();     // get database
+
+        int userId = getUserId(db, username);
+        int eventId = getEventId(db, eventName);
+
+        if (userId == -1 || eventId == -1) {       // if user or event isn't found
+            return false;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put("userId", userId);
+        values.put("eventId", eventId);
+        values.put("rating", rating);
+
+        // insert into ratings table
+        long result = db.insert("ratings", null, values);
+
+        // update avgRating and numberOfRatings in events table for that event
+        if (result != -1) {       // if rating was successful
+            db.execSQL("UPDATE events SET " +
+                    "avgRating = ?, " +
+                    "numberOfRatings = numberOfRatings + 1 " +
+                    "WHERE id = ?", new Object[]{newAvg, eventId});
+            return true;
+        }
+
+        return false;
     }
 
     public int getImageRes(String category){
