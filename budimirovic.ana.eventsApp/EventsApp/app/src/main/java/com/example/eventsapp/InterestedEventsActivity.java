@@ -57,8 +57,11 @@ public class InterestedEventsActivity extends AppCompatActivity implements Adapt
         // get event to transfer to next activity
         Event event = (Event) parent.getItemAtPosition(position);
 
-        // send only name
-        intent.putExtra("nameOfEvent", event.getName());
+        Bundle bundle = new Bundle();
+        bundle.putString("nameOfEvent", event.getName());
+        bundle.putString("username", username);
+
+        intent.putExtras(bundle);
 
         // start Activity
         startActivity(intent);
