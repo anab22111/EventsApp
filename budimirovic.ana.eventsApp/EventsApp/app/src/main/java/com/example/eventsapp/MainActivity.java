@@ -21,9 +21,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CheckBox cbAdmin;
 
     private SQLiteDatabase db;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             // get hashed password
             String hashedPassword = PasswordHasher.hashPassword(password);
+
 
             if(!username.isEmpty() && !password.isEmpty() && !email.isEmpty()){
 
