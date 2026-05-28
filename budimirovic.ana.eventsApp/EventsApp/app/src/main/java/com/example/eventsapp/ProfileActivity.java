@@ -3,6 +3,8 @@ package com.example.eventsapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +14,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private TextView tvUsername, tvEmail;
     private Button btnPassword, btnEndSession;
     private String password;
-    private String username;
+    private String username, email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,9 +24,16 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         Bundle bundle = getIntent().getExtras();
 
         username = bundle.getString("username");
-        String email = bundle.getString("email");
-        password = bundle.getString("password");
 
+        // get email
+        dbHelper helper = new dbHelper(this);
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT email FROM users WHERE username = ?", new String[]{username});
+
+        if(cursor.moveToFirst()){
+            email = cursor.getString(0);    // only email column selected, hence getString(0)
+        }
 
         tvUsername = findViewById(R.id.tvUsername);
         tvEmail = findViewById(R.id.tvEmail);
@@ -55,7 +64,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             Intent intent = new Intent(ProfileActivity.this,
                     PasswordActivity.class);
 
-            // send password to next activity
+            // send username to next activity
             Bundle bundle = new Bundle();
             bundle.putString("username", username);
 

@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText etLoginUsername, etLoginPassword, etRegisterUsername, etRegisterPassword, etRegisterEmail;
     private TextView tvUsername, tvEmail, tvPassword;
 
-    SQLiteDatabase db;
+    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +94,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             
             String username = etRegisterUsername.getText().toString();
             String password = etRegisterPassword.getText().toString();
-            String email = etRegisterEmail.getText().toString(); // CHECK EMAIL
+            String email = etRegisterEmail.getText().toString();
 
             if(!username.isEmpty() && !password.isEmpty() && !email.isEmpty()){
 
-                String hashedPassword = PasswordHasher.hashPassword(password);   // get hashed password
+                // check if email is in valid format
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    Toast.makeText(MainActivity.this, "Please enter a valid email address.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
+                String hashedPassword = PasswordHasher.hashPassword(password);   // get hashed password
 
                 // try to register user,  if not successful db.insert returns -1
                 long result = registerUser(username, hashedPassword, email);

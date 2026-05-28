@@ -23,14 +23,6 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
 
         String username = bundle.getString("username");
 
-        email = bundle.getString("email");
-        password = bundle.getString("password");
-
-        //check to see if an email was forwarded
-        if(email == null){
-            email="";        //if not place empty string
-        }
-
         tvUsername = findViewById(R.id.username);
         tvUsername.setText(username);                   //set forwarded username
         tvWelcome = findViewById(R.id.welcome);
@@ -44,7 +36,7 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
         bundle1.putString("username",username);
         EventsFragment.setArguments(bundle1);
 
-        //load EventsFragment at the beggining
+        //load EventsFragment at the beginning
         getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragmentContanier, EventsFragment)
                                 .commit();
@@ -78,8 +70,6 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
 
             Bundle bundle = new Bundle();
             bundle.putString("username",username);
-            bundle.putString("email", email);
-            bundle.putString("password", password);
 
             //sending data by setting arguments for the next fragment
             MyEventsFragment myEventsFragment = new MyEventsFragment();

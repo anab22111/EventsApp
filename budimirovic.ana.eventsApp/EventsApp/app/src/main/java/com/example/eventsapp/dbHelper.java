@@ -15,8 +15,6 @@ public class dbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "EventsApp.db";
     private static final int DATABASE_VERSION = 1;
 
-
-
     public dbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -340,7 +338,7 @@ public class dbHelper extends SQLiteOpenHelper {
         // make query to find row with correct commitment, event and user id
         Cursor cursor = db.query(
                 "attendance",      // name of table
-                columns,           // colons needed
+                columns,           // columns needed
                 selection,         // WHERE part
                 selectionArgs,     // values for WHERE
                 null, null, null   // groupBy, having, orderBy
@@ -379,7 +377,6 @@ public class dbHelper extends SQLiteOpenHelper {
             if (previousCommitment == null) {
                 // if previous nothing, check if current is attending
                 if (commitment.equals("ATTENDING")) {
-                    // check if there are any free seats
 
                     updateAttendeeCount(db, eventId, 1);    // increase number
                 }

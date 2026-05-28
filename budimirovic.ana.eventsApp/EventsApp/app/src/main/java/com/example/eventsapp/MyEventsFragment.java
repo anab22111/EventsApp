@@ -67,16 +67,9 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener{
 
         }else if(view.getId() == R.id.btnMyProfile){        //go to ProfileActivity
 
-            //if email wasnt forwarded set to an empty string
-            if(email == null){
-                email = "";
-            }
-
             Intent intent = new Intent(getActivity(), ProfileActivity.class);
 
-            intent.putExtra("email", email);
             intent.putExtra("username", username);
-            intent.putExtra("password", password);
 
             startActivity(intent);
         }
