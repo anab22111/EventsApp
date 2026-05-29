@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnFirstLogin, btnSecondLogin, btnFirstRegister, btnSecondRegister;
     private EditText etLoginUsername, etLoginPassword, etRegisterUsername, etRegisterPassword, etRegisterEmail;
     private TextView tvUsername, tvEmail, tvPassword;
+    private CheckBox cbAdmin;
 
     private SQLiteDatabase db;
 
@@ -41,11 +43,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvUsername = findViewById(R.id.textViewUsername);
         tvPassword = findViewById(R.id.textViewPassword);
         tvEmail = findViewById(R.id.textViewEmail);
+        cbAdmin = findViewById(R.id.checkBoxAdmin);
 
         btnFirstLogin.setOnClickListener(this);
         btnSecondLogin.setOnClickListener(this);
         btnFirstRegister.setOnClickListener(this);
         btnSecondRegister.setOnClickListener(this);
+
+
+        cbAdmin.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // if user is admin then 
+        });
+
     }
 
     @Override
