@@ -1,6 +1,7 @@
 package com.example.eventsapp;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -47,6 +49,9 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
+
+        Bundle bundle1 = getArguments();
+        username = bundle1.getString("username");
 
         // make db helper
         dbHelper = new dbHelper(getContext());
@@ -201,10 +206,25 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             currentCategory = "Concert";
 
         }else if(view.getId() == R.id.btnAddEvent){
-            // go to CreateEventActivity
+            // get database
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-            Intent intent = new Intent(getActivity(), CreateEventActivity.class);
-            startActivity(intent);
+            // get user from database
+            Cursor cursor = db.rawQuery("SELECT * FROM users WHERE username=?", new String[]{username});
+
+            int isAdmin = 0;
+
+            if(cursor.moveToFirst()){
+                isAdmin = cursor.getInt((cursor.getColumnIndexOrThrow("admin")));    // get column admin
+            }
+
+            // check if user is admin
+            if(isAdmin == 1){              // id user is admin allow him to go to next activity
+                Intent intent = new Intent(getActivity(), CreateEventActivity.class);
+                startActivity(intent);
+            }else{
+                Toast.makeText(getContext(), "You don't have the permissions to add an event!", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

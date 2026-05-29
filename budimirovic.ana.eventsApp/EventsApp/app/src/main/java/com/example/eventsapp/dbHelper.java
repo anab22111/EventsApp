@@ -30,7 +30,9 @@ public class dbHelper extends SQLiteOpenHelper {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "username TEXT UNIQUE NOT NULL, " +
                 "email TEXT UNIQUE NOT NULL, " +
-                "password TEXT NOT NULL);";
+                "password TEXT NOT NULL, " +
+//                "server_id TEXT, " +
+                "admin INTEGER DEFAULT 0);";
         db.execSQL(createUsersTable);
 
         // events table

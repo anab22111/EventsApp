@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CheckBox cbAdmin;
 
     private SQLiteDatabase db;
+
+    private boolean isAdmin = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +54,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         cbAdmin.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // if user is admin then 
+            if(isChecked){
+                isAdmin = true;
+            }else{
+                isAdmin = false;
+            }
         });
 
     }
@@ -77,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tvEmail.setVisibility(View.VISIBLE);
             tvUsername.setVisibility(View.VISIBLE);
             tvPassword.setVisibility(View.VISIBLE);
+            cbAdmin.setVisibility(View.VISIBLE);
         }
 
         else if(view.getId() == R.id.btnSecondLogin){
@@ -141,6 +149,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         values.put("username", username);
         values.put("email", email);
         values.put("password", password);
+        if(isAdmin) values.put("admin", 1);  // 1 is true, 0 is false
+
 
         long result = db.insert("users", null, values);
 

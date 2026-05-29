@@ -156,7 +156,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/checkBoxAdmin"
-        android:text="Admin"
+        android:text="@string/Admin"
         android:visibility="gone">
     </CheckBox>
 
