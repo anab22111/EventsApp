@@ -33,6 +33,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
     private EventAdapter adapter;
     private dbHelper dbHelper;
     private String username;
+    private boolean isAdmin;
 
     private String currentCategory = "All";   // used to remember what button was clicked(what category)
     // initial button is All
@@ -52,6 +53,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
         Bundle bundle1 = getArguments();
         username = bundle1.getString("username");
+        isAdmin = bundle1.getBoolean("isAdmin");
 
         // make db helper
         dbHelper = new dbHelper(getContext());
@@ -83,6 +85,13 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
         // at the beginning all button is "clicked" so it is different color
         btnAll.setBackgroundColor(getResources().getColor(R.color.plum));
+
+        // check if user is admin
+        if(isAdmin){
+            btnAddEvent.setVisibility(View.VISIBLE);
+        }else{
+            btnAddEvent.setVisibility(View.GONE);
+        }
 
         list.setOnItemClickListener(this);
         btnExhibition.setOnClickListener(this);
@@ -206,25 +215,10 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             currentCategory = "Concert";
 
         }else if(view.getId() == R.id.btnAddEvent){
-            // get database
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            // go to createEvent activity
+            Intent intent = new Intent(getActivity(), CreateEventActivity.class);
+            startActivity(intent);
 
-            // get user from database
-            Cursor cursor = db.rawQuery("SELECT * FROM users WHERE username=?", new String[]{username});
-
-            int isAdmin = 0;
-
-            if(cursor.moveToFirst()){
-                isAdmin = cursor.getInt((cursor.getColumnIndexOrThrow("admin")));    // get column admin
-            }
-
-            // check if user is admin
-            if(isAdmin == 1){              // id user is admin allow him to go to next activity
-                Intent intent = new Intent(getActivity(), CreateEventActivity.class);
-                startActivity(intent);
-            }else{
-                Toast.makeText(getContext(), "You don't have the permissions to add an event!", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 

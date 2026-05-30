@@ -11,7 +11,7 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
 
     private TextView tvWelcome,tvUsername;
     private Button btnEvents, btnMyEvents, btnFriends;
-    private String email, password;
+    private Boolean isAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +22,7 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
         Bundle bundle = getIntent().getExtras();    //taking a reference of the bundle that was forwarded
 
         String username = bundle.getString("username");
+        isAdmin = bundle.getBoolean("isAdmin");
 
         tvUsername = findViewById(R.id.username);
         tvUsername.setText(username);                   //set forwarded username
@@ -34,6 +35,7 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
         EventsFragment EventsFragment = new EventsFragment();
         Bundle bundle1 = new Bundle();
         bundle1.putString("username",username);
+        bundle1.putBoolean("isAdmin", isAdmin);
         EventsFragment.setArguments(bundle1);
 
         //load EventsFragment at the beginning
@@ -57,6 +59,7 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
             EventsFragment EventsFragment = new EventsFragment();
             Bundle bundle = new Bundle();
             bundle.putString("username",username);
+            bundle.putBoolean("isAdmin", isAdmin);
             EventsFragment.setArguments(bundle);
 
             getSupportFragmentManager().beginTransaction()
@@ -70,6 +73,7 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
 
             Bundle bundle = new Bundle();
             bundle.putString("username",username);
+            bundle.putBoolean("isAdmin", isAdmin);
 
             //sending data by setting arguments for the next fragment
             MyEventsFragment myEventsFragment = new MyEventsFragment();

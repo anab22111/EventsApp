@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CheckBox cbAdmin;
 
     private SQLiteDatabase db;
+    private HttpHelper httpHelper;
 
     private boolean isAdmin = false;
 
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // make database
         dbHelper helper = new dbHelper(this);
         db = helper.getWritableDatabase();
+
+        httpHelper = new HttpHelper();
 
         btnFirstLogin = findViewById(R.id.btnFirstLogin);
         btnSecondLogin = findViewById(R.id.btnSecondLogin);
@@ -100,14 +103,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             if(!username.isEmpty() && !password.isEmpty()){
                 // check if user exists
-                int userId = checkUserLogin(username, password);
-
-                if(userId != -1){          // if user exists
-                    Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-                    goToNextActivity(username);
-                }else{
-                    Toast.makeText(this, "Incorrect password or username.", Toast.LENGTH_SHORT).show();
+                try {
+                    checkUserLogin(username, password);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
+
             }else{
                 Toast.makeText(MainActivity.this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
             }
@@ -117,8 +118,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String username = etRegisterUsername.getText().toString();
             String password = etRegisterPassword.getText().toString();
             String email = etRegisterEmail.getText().toString();
-
-            String hashedPassword = PasswordHasher.hashPassword(password);
 
             if(!username.isEmpty() && !password.isEmpty() && !email.isEmpty()){
 
@@ -132,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 JSONObject data  = new JSONObject();
                 try {
                     data.put("username", username);
-                    data.put("password", hashedPassword);
+                    data.put("password", password);
                     data.put("email", email);
                     data.put("isAdmin", Boolean.valueOf(isAdmin));
                 } catch (JSONException e) {
@@ -144,7 +143,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Thread thread = new Thread(new Runnable() {
                     @Override public void run() {
                         // code to run in background thread
-                        HttpHelper httpHelper = new HttpHelper();
                         String url = "http://192.168.0.7:3000/users";    // url for users table - computer ip address:port/table
 
                         JSONObject serverResponse = null;
@@ -180,8 +178,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     // get status code
                                     int statusCode = response.optInt("http_status_code",0);
 
-                                    if(statusCode == 200){
-                                        // user is registered successfully
+                                    if(statusCode == 200){                  // user is registered successfully
+
                                         String hashedPassword = PasswordHasher.hashPassword(password);
 
                                         // get id from servers response
@@ -191,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                         if (result != -1) {
                                             Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
-                                            goToNextActivity(username);
+                                            goToNextActivity(username, isAdmin);
                                         } else {
                                             Toast.makeText(MainActivity.this, "Error when saving to local database.", Toast.LENGTH_SHORT).show();
                                         }
@@ -228,37 +226,82 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         return result;
     }
-    private int checkUserLogin(String username, String password){
+    private void checkUserLogin(String username, String password) throws JSONException {
 
-        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE username = ?", new String[]{username});
+        // make json for server
+        JSONObject loginData = new JSONObject();
+        loginData.put("username", username);
+        loginData.put("password", password);
 
-        if (cursor.moveToFirst()) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // url for users login /login
+                String url = "http://192.168.0.7:3000/login";
 
-            // get position of columns
-            int idColumnIndex = cursor.getColumnIndex("id");
-            int passwordColumnIndex = cursor.getColumnIndex("password");
+                JSONObject serverResponse = null;
+                String errorText = null;
 
-            // get the id
-            int userId = cursor.getInt(idColumnIndex);
+                // check if user exists and if password is correct
+                try {
+                    serverResponse = httpHelper.postJSONObjectFromURL(url, loginData);
+                } catch (IOException e) {
+                    e.printStackTrace();    // if there is no internet or server is off
+                    errorText = "Server unreachable.";
+                } catch (JSONException e) {
+                    e.printStackTrace();      // if server returns something that's not JSON
+                    errorText = "Server didn't return JSON.";
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    errorText = "Error " + e.getMessage();
+                }
 
-            // get password
-            String hashedPasswordFromDb = cursor.getString(passwordColumnIndex);
+                final JSONObject response = serverResponse;
+                final String finalErrorText = errorText;
 
-            // check if the password is correct
-            if (PasswordHasher.verifyPassword(password, hashedPasswordFromDb)) {
-                cursor.close();             // close cursor
-                return userId;             // return id of user
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (finalErrorText != null) {
+                            Toast.makeText(MainActivity.this, finalErrorText, Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        if(response != null){
+                            // get status code
+                            int statusCode = response.optInt("http_status_code",0);
+                            if(statusCode == 200){          // valid username and password
+                                Toast.makeText(MainActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+
+                                // get user object from response
+                                JSONObject userObj = response.optJSONObject("user");
+                                boolean isAdminServer = false;
+
+                                if (userObj != null) {
+//                                    String serverId = userObj.optString("_id", "");
+//                                    String email = userObj.optString("email", "");
+                                    isAdminServer = userObj.optBoolean("isAdmin", false);
+                                }
+
+                                goToNextActivity(username, isAdminServer);     // go to next Activity
+
+                            }else if(statusCode == 401){
+                                Toast.makeText(MainActivity.this, "Incorrect username or password!", Toast.LENGTH_SHORT).show();
+                            }else {
+                                Toast.makeText(MainActivity.this, "Login failed. Status: " + statusCode, Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Toast.makeText(MainActivity.this, "Unknown error from server", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
-        }
-
-        if (cursor != null) {     // user not found or password incorrect
-            cursor.close();
-        }
-
-        return -1; // return -1 if user doesn't exist or password is incorrect
+        });
+        thread.start();   // start thread
     }
 
-    private void goToNextActivity(String username){
+    private void goToNextActivity(String username, boolean isAdmin){
         //intent for next activity
         Intent intent = new Intent(MainActivity.this,
                 EventsActivity.class);
@@ -266,6 +309,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //bundle to transfer data
         Bundle bundle = new Bundle();
         bundle.putString("username", username);
+        bundle.putBoolean("isAdmin", isAdmin);
 
         //connecting bundle to intent
         intent.putExtras(bundle);
