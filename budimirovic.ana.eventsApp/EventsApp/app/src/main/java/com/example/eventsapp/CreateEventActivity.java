@@ -14,6 +14,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -81,7 +85,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             int capacity = 0;
 
 
-            // if any of these fields are empty send toast message and dont create event
+            // if any of these fields are empty send toast message and don't create event
             if(name.isEmpty() || dateTime.isEmpty() || location.isEmpty()){
                 Toast.makeText(CreateEventActivity.this, "Fill in all the mandatory fields.", Toast.LENGTH_SHORT).show();
                 return;
@@ -127,29 +131,114 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             int image = getImageRes(category);
 
             // check if event is promoted
-            int isPromoted = checkbox.isChecked() ? 1 : 0;
+            boolean isPromoted = checkbox.isChecked() ? true : false;
 
-            // make helper and get database
-            dbHelper helper = new dbHelper(this);
-            SQLiteDatabase db = helper.getWritableDatabase();
+            // post to global database
 
-            ContentValues values = new ContentValues();
+            // create json for server
+            JSONObject data = new JSONObject();
+            try {
+                data.put("name", name);
+                data.put("description", description);
+                data.put("location", location);
+                data.put("eventTime", dateTime);
+                data.put("category", category);
+                data.put("promoted", isPromoted);
+                data.put("capacity", capacity);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
 
-            values.put("name", name);
-            values.put("description", description);
-            values.put("location", location);
-            values.put("dateTime", dateTime);
-            values.put("category", category);
-            values.put("promoted", isPromoted);
-            values.put("capacity", capacity);
+            final int cap = capacity;
 
-            db.insert("events", null, values);
 
-            Toast.makeText(this, "Event successfully created.", Toast.LENGTH_SHORT).show();
-            finish();
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String url = "http://192.168.0.7:3000/events";
+//                  String url = "http://10.0.2.2:3000/events";
+
+                    HttpHelper httpHelper = new HttpHelper();   // get http helper
+
+                    JSONObject serverResponse = null;
+                    String errorText = null;
+
+                    try {
+                        serverResponse = httpHelper.postJSONObjectFromURL(url, data, "POST");
+                    } catch (IOException e) {
+                        e.printStackTrace();    // if there is no internet or server is off
+                        errorText = "Server unreachable.";
+                    } catch (JSONException e) {
+                        e.printStackTrace();      // if server returns something that's not JSON
+                        errorText = "Server didn't return JSON.";
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                        errorText = "Error " + e.getMessage();
+                    }
+
+                    final JSONObject response = serverResponse;
+                    final String finalErrorText = errorText;
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // check if there was an error with the server
+                            if (finalErrorText != null) {
+                                Toast.makeText(CreateEventActivity.this, finalErrorText, Toast.LENGTH_LONG).show();
+                                return;        // print error and exit
+                            }
+
+                            if(response != null){
+                                // get response code
+                                int statusCode = response.optInt("http_status_code",0);
+
+                                // check if creating newEvent was a success
+                                if(statusCode == 200){       // success
+                                    Toast.makeText(CreateEventActivity.this, "Event successfully created.", Toast.LENGTH_SHORT).show();
+
+                                    // get event id in server
+                                    String serverId = response.optString("_id");
+
+                                    // add to local database
+                                    addToLocalDB(name, description, location, dateTime, category, isPromoted, cap, serverId);
+                                }else{
+                                    Toast.makeText(CreateEventActivity.this, "Creating new event failed. Status: " + statusCode, Toast.LENGTH_SHORT).show();
+                                }
+                            }else{
+                                Toast.makeText(CreateEventActivity.this, "Unknown error from server", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
+            thread.start();
         }
     }
+    private void addToLocalDB(String name, String description, String location, String dateTime, String category, boolean promoted, int capacity, String serverId){
+        // make helper and get database
+        dbHelper helper = new dbHelper(this);
+        SQLiteDatabase db = helper.getWritableDatabase();
 
+        ContentValues values = new ContentValues();
+
+        int isPromoted = 0;
+
+        if (promoted) isPromoted = 1;
+        else isPromoted = 0;
+
+        values.put("name", name);
+        values.put("description", description);
+        values.put("location", location);
+        values.put("dateTime", dateTime);
+        values.put("category", category);
+        values.put("promoted", isPromoted);
+        values.put("capacity", capacity);
+        values.put("server_id", serverId);
+
+        db.insert("events", null, values);
+
+        finish();
+    }
     public int getImageRes(String category){
         int imageRes = 0;
         if(category.equals("Marathon")){
@@ -170,6 +259,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
         return imageRes;
      }
+
+
 
 
 }

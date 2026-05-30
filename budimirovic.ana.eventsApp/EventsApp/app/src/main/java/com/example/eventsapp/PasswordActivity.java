@@ -1,5 +1,4 @@
 package com.example.eventsapp;
-
 import static java.security.AccessController.getContext;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-
 public class PasswordActivity extends AppCompatActivity implements View.OnClickListener{
     private TextView tvChangePassword;
     private EditText etCurrent, etNew;
@@ -49,7 +47,6 @@ public class PasswordActivity extends AppCompatActivity implements View.OnClickL
 
         btnSave.setOnClickListener(this);
     }
-
     @Override
     public void onClick(View view) {
 
@@ -147,7 +144,6 @@ public class PasswordActivity extends AppCompatActivity implements View.OnClickL
             }else{
                 Toast.makeText(PasswordActivity.this, "Enter new password!", Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 

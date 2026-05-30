@@ -87,7 +87,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
         btnAll.setBackgroundColor(getResources().getColor(R.color.plum));
 
         // check if user is admin
-        if(isAdmin){
+        if(isAdmin == true){
             btnAddEvent.setVisibility(View.VISIBLE);
         }else{
             btnAddEvent.setVisibility(View.GONE);

@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 // url for users login /login
                 String url = "http://192.168.0.7:3000/login";
-//                String url = "http://10.0.2.2:3000/password";
+//                String url = "http://10.0.2.2:3000/login";
 
                 JSONObject serverResponse = null;
                 String errorText = null;
@@ -279,14 +279,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 Toast.makeText(MainActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
 
                                 // get user object from response
-                                JSONObject userObj = response.optJSONObject("user");
-                                boolean isAdminServer = false;
-
-                                if (userObj != null) {
-//                                    String serverId = userObj.optString("_id", "");
-//                                    String email = userObj.optString("email", "");
-                                    isAdminServer = userObj.optBoolean("isAdmin", false);
-                                }
+                                boolean isAdminServer = response.optBoolean("isAdmin");
 
                                 goToNextActivity(username, isAdminServer);     // go to next Activity
 

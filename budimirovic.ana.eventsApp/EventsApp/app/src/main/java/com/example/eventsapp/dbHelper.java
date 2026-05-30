@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class dbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "EventsApp.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     public dbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,6 +48,7 @@ public class dbHelper extends SQLiteOpenHelper {
                 "numberOfAttendees INTEGER DEFAULT 0 CHECK (numberOfAttendees >= 0), " +   // number of registered users
                 "avgRating REAL DEFAULT 0 CHECK (avgRating BETWEEN 0 AND 5), " +
                 "numberOfRatings INTEGER DEFAULT 0 CHECK (numberOfRatings >= 0), "+
+                "server_id TEXT, " +
                 "CHECK (promoted = 0 OR capacity > 0), " +    // if event promoted then capacity greater then 0
                 "CHECK (promoted = 0 OR numberOfAttendees <= capacity));";    // for promoted events numb of Attendees can't go over capacity
         db.execSQL(createEventsTable);
