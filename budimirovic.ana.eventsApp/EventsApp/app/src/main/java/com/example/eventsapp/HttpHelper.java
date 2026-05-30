@@ -67,11 +67,8 @@ public class HttpHelper {
         urlConnection.setDoOutput(true);
         urlConnection.setDoInput(true);
 
-        try {
-            urlConnection.connect();
-        } catch (IOException e) {
-            return null;
-        }
+        urlConnection.connect();
+
 
         DataOutputStream os = new DataOutputStream(urlConnection.getOutputStream());
         /* write json object */
@@ -84,16 +81,25 @@ public class HttpHelper {
         Log.i("MSG", urlConnection.getResponseMessage());
 
         JSONObject responseObj = null;
-        if (responseCode == SUCCESS) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-            br.close();
-            responseObj = new JSONObject(sb.toString());
+        BufferedReader br;
+
+        if(responseCode == SUCCESS){
+            br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+        }else{
+            br = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
+
         }
+
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line);
+        }
+
+        br.close();
+        responseObj = new JSONObject(sb.toString());
+        responseObj.put("http_status_code", responseCode);
+
 
         urlConnection.disconnect();
         return responseObj;

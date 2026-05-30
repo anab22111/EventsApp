@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class dbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "EventsApp.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     public dbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -31,7 +31,7 @@ public class dbHelper extends SQLiteOpenHelper {
                 "username TEXT UNIQUE NOT NULL, " +
                 "email TEXT UNIQUE NOT NULL, " +
                 "password TEXT NOT NULL, " +
-//                "server_id TEXT, " +
+                "server_id TEXT, " +
                 "admin INTEGER DEFAULT 0);";
         db.execSQL(createUsersTable);
 

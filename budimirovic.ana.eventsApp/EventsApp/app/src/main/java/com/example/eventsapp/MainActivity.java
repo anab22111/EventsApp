@@ -14,6 +14,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private Button btnFirstLogin, btnSecondLogin, btnFirstRegister, btnSecondRegister;
     private EditText etLoginUsername, etLoginPassword, etRegisterUsername, etRegisterPassword, etRegisterEmail;
@@ -112,11 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String password = etRegisterPassword.getText().toString();
             String email = etRegisterEmail.getText().toString();
 
-            // CHECK EMAIL
-
-            // get hashed password
             String hashedPassword = PasswordHasher.hashPassword(password);
-
 
             if(!username.isEmpty() && !password.isEmpty() && !email.isEmpty()){
 
@@ -125,30 +127,100 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this, "Please enter a valid email address.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                // try to register user,  if not successful db.insert returns -1
-                long result = registerUser(username, hashedPassword, email);
-
-                if(result != -1){           // registration successful
-
-                    Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
-
-                    goToNextActivity(username);
-                }else{
-                    Toast.makeText(MainActivity.this, "Username or email already exists!", Toast.LENGTH_SHORT).show();
+                // if email is in valid format try to register user
+                // create JSON to send
+                JSONObject data  = new JSONObject();
+                try {
+                    data.put("username", username);
+                    data.put("password", hashedPassword);
+                    data.put("email", email);
+                    data.put("isAdmin", Boolean.valueOf(isAdmin));
+                } catch (JSONException e) {
+                    Toast.makeText(this, "Error packing data", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                // make new thread to send message to server
+                Thread thread = new Thread(new Runnable() {
+                    @Override public void run() {
+                        // code to run in background thread
+                        HttpHelper httpHelper = new HttpHelper();
+                        String url = "http://192.168.0.7:3000/users";    // url for users table - computer ip address:port/table
+
+                        JSONObject serverResponse = null;
+                        String errorText = null;
+
+                        // try to register user on server
+                        try {
+                            serverResponse = httpHelper.postJSONObjectFromURL(url, data);
+                        } catch (IOException e) {
+                            e.printStackTrace();    // if there is no internet or server is off
+                            errorText = "Server unreachable.";
+                        } catch (JSONException e) {
+                            e.printStackTrace();      // if server returns something that's not JSON
+                            errorText = "Server didn't return JSON.";
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                            errorText = "Error " + e.getMessage();
+                        }
+
+                        final JSONObject response = serverResponse;
+                        final String finalErrorText = errorText;
+                        // UI thread - what needs to be done when thread finishes
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (finalErrorText != null) {
+                                    Toast.makeText(MainActivity.this, finalErrorText, Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+
+                                // server is alive and sent a response
+                                if(response != null){
+                                    // get status code
+                                    int statusCode = response.optInt("http_status_code",0);
+
+                                    if(statusCode == 200){
+                                        // user is registered successfully
+                                        String hashedPassword = PasswordHasher.hashPassword(password);
+
+                                        // get id from servers response
+                                        String serverId = response.optString("_id", "");
+
+                                        long result = registerUser(username, hashedPassword, email, serverId);
+
+                                        if (result != -1) {
+                                            Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+                                            goToNextActivity(username);
+                                        } else {
+                                            Toast.makeText(MainActivity.this, "Error when saving to local database.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }else if(statusCode == 409){
+                                        Toast.makeText(MainActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(MainActivity.this, "Error while registering.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }else {
+                                    Toast.makeText(MainActivity.this, "Unknown error from server.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+                thread.start();
             }else{
                 Toast.makeText(MainActivity.this, "You need to fill in all the fields.", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private long registerUser(String username, String password, String email){
+    private long registerUser(String username, String password, String email, String serverId){
 
         ContentValues values = new ContentValues();
         values.put("username", username);
         values.put("email", email);
         values.put("password", password);
+        values.put("server_id", serverId);
         if(isAdmin) values.put("admin", 1);  // 1 is true, 0 is false
 
 
