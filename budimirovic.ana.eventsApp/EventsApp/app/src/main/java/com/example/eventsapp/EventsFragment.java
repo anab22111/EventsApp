@@ -18,6 +18,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 ///**
@@ -55,9 +60,8 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
         username = bundle1.getString("username");
         isAdmin = bundle1.getBoolean("isAdmin");
 
-        // make db helper
-        dbHelper = new dbHelper(getContext());
-        events = new ArrayList<>(dbHelper.getSortedEvents());    // get list of events form dbHelper
+        // make list of events
+        events = new ArrayList<>();
 
         // make adapter for list
         adapter = new EventAdapter(getContext(), events);    // have to use getContext bc fragment isn't an Activity
@@ -67,11 +71,18 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
         // connect list to adapter
         list.setAdapter(adapter);
 
+        // get list of events from server
+        getEvents(currentCategory);                 // getEvents updates adapter
+
+        // initiate dbHelper
+        dbHelper = new dbHelper(getContext());
+
+
         // set emptyView for list
         emptyView = view.findViewById(R.id.tvNoUpcomingEvents);
         list.setEmptyView(emptyView);
 
-        // just findViewById doesn't work because fragment doesnt have that method, therefore need to use view
+        // just findViewById doesn't work because fragment doesn't have that method, therefore need to use view
         // get all elements
         btnExhibition = view.findViewById(R.id.btnExhibition);
         btnFootball = view.findViewById(R.id.btnFootball);
@@ -139,87 +150,59 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             // if a button is clicked reset the color of all buttons
             resetColors();
             btnExhibition.setBackgroundColor(getResources().getColor(R.color.plum));
-
-            adapter.setEvents(dbHelper.getEventsByCategory("Exhibition"));
-
             currentCategory = "Exhibition";
 
         }else if(view.getId() == R.id.btnMarathon){
             // if a button is clicked reset the color of all buttons
             resetColors();
-
             btnMarathon.setBackgroundColor(getResources().getColor(R.color.plum));
-
-            adapter.setEvents(dbHelper.getEventsByCategory("Marathon"));
-
             currentCategory = "Marathon";
 
         }else if(view.getId() == R.id.btnFootball){
             // if a button is clicked reset the color of all buttons
             resetColors();
-
             btnFootball.setBackgroundColor(getResources().getColor(R.color.plum));
-
-            adapter.setEvents(dbHelper.getEventsByCategory("Football"));
-
             currentCategory = "Football";
 
         }else if(view.getId() == R.id.btnFestival){
             // if a button is clicked reset the color of all buttons
             resetColors();
-
             btnFestival.setBackgroundColor(getResources().getColor(R.color.plum));
-
-            adapter.setEvents(dbHelper.getEventsByCategory("Festival"));
-
             currentCategory = "Festival";
 
         }else if(view.getId() == R.id.btnParty){
             // if a button is clicked reset the color of all buttons
             resetColors();
-
             btnParty.setBackgroundColor(getResources().getColor(R.color.plum));
-
-            adapter.setEvents(dbHelper.getEventsByCategory("Party"));
-
             currentCategory = "Party";
 
         }else if(view.getId() == R.id.btnStandUpTheater){
             // if a button is clicked reset the color of all buttons
             resetColors();
-
             btnStandUpTheater.setBackgroundColor(getResources().getColor(R.color.plum));
-
-            adapter.setEvents(dbHelper.getEventsByCategory("Stand-Up & Theater"));
-
             currentCategory = "Stand-Up & Theater";
 
         }else if(view.getId() == R.id.btnAll){
             // if a button is clicked reset the color of all buttons
             resetColors();
-
             btnAll.setBackgroundColor(getResources().getColor(R.color.plum));
-
-            adapter.setEvents(dbHelper.getSortedEvents());
-
             currentCategory = "All";
 
         }else if(view.getId() == R.id.btnConcert){
             // if a button is clicked reset the color of all buttons
             resetColors();
-
             btnConcert.setBackgroundColor(getResources().getColor(R.color.plum));
-
-            adapter.setEvents(dbHelper.getEventsByCategory("Concert"));
-
             currentCategory = "Concert";
 
         }else if(view.getId() == R.id.btnAddEvent){
             // go to createEvent activity
             Intent intent = new Intent(getActivity(), CreateEventActivity.class);
             startActivity(intent);
-
+            return; // exit
         }
+
+        getEvents(currentCategory);   // update adapter
+
     }
 
     public void resetColors(){
@@ -233,21 +216,145 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
         btnAddEvent.setBackgroundColor(getResources().getColor(R.color.purple_500));
         btnConcert.setBackgroundColor(getResources().getColor(R.color.purple_500));
     }
+
+    private void getEvents(String category){
+        // make http helper
+        HttpHelper httpHelper = new HttpHelper();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                String originalUrl = "http://192.168.0.7:3000/events";    // url for events table - computer ip address:port/events
+                String url = originalUrl;
+                //String url = "http://10.0.2.2:3000/events";
+
+                if(!category.equals("All")){    // if category isn't ALL make new url
+                    try {
+                        url = "http://192.168.0.7:3000/events/" + java.net.URLEncoder.encode(category, "UTF-8");  // encode bc category Theater & StandUp has spaces and &
+                    } catch (java.io.UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                String errorText = null;
+                ArrayList<Event> serverEvents = new ArrayList<>();
+
+                // try to get events from server
+                try {
+                    JSONArray JSONevents = httpHelper.getJSONArrayFromUrl(url);    // server returns a JSONArray
+
+                    if(JSONevents != null){     // check if server returned events
+
+                        // delete all events from local database so it's not duplicated
+                        dbHelper.getWritableDatabase().delete("events", null, null);
+
+                        // go through all elements of JSONArray
+                        for(int i = 0; i < JSONevents.length(); i++){
+                            JSONObject JSONEvent = JSONevents.getJSONObject(i);
+
+                            boolean isPromoted = JSONEvent.optBoolean("promoted");
+                            String name = JSONEvent.getString("name");
+                            String description = JSONEvent.getString("description");
+                            String location = JSONEvent.getString("location");
+                            String eventTime = JSONEvent.getString("eventTime");
+                            String category = JSONEvent.getString("category");
+                            String id = JSONEvent.getString("_id");
+                            int capacity = JSONEvent.optInt("capacity", 0);
+                            int imageRes = getImageRes(category);
+
+                            Event event;
+                            // if promoted make promoted event, otherwise make regular event
+                            if(isPromoted){
+                                event = EventFactory.createPromotedEvent(name,description,location,eventTime,category, imageRes ,capacity);
+                            }else{
+                                event = EventFactory.createRegularEvent(name,description,location,eventTime,category, imageRes);
+                            }
+                            serverEvents.add(event);           // add to list of events
+
+                            updateLocalDatabase(name,description,location,eventTime,category, imageRes ,capacity, isPromoted);
+
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();    // if there is no internet or server is off
+                    errorText = "Server unreachable.";
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    errorText = "Error " + e.getMessage();
+                }
+
+
+                // update ui when finished
+                final ArrayList<Event> finalReadyList = serverEvents;
+                final String finalErrorText = errorText;
+
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (finalErrorText != null) {
+                                Toast.makeText(getContext(), finalErrorText, Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            // there were no errors
+                            events.clear();                  // clear global events list
+                            events.addAll(finalReadyList);      // add all events from server
+                            adapter.notifyDataSetChanged();     // update adapter
+                        }
+                    });
+                }
+            }
+        });
+        thread.start();
+    }
+    private int getImageRes(String category){
+        int imageRes = 0;
+        if(category.equals("Marathon")){
+            imageRes = R.drawable.marathon;
+        }else if(category.equals("Festival")){
+            imageRes = R.drawable.festival;
+        }else if(category.equals("Football")){
+            imageRes = R.drawable.football;
+        }else if(category.equals("Exhibition")){
+            imageRes = R.drawable.exhibition;
+        }else if(category.equals("Stand-Up & Theater")){
+            imageRes = R.drawable.standup;
+        }else if(category.equals("Concert")){
+            imageRes = R.drawable.concert;
+        }else if(category.equals("Party")){
+            imageRes = R.drawable.party;
+        }
+
+        return imageRes;
+    }
+
+    private void updateLocalDatabase(String name,String description, String location,String eventTime,String category,int imageRes ,int capacity, boolean isPromoted){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        int promoted;
+        if(isPromoted) promoted = 1;
+        else promoted = 0;
+
+        android.content.ContentValues values = new android.content.ContentValues();
+        values.put("name", name);
+        values.put("description", description);
+        values.put("location", location);
+        values.put("dateTime", eventTime);
+        values.put("category", category);
+        values.put("promoted",  promoted);
+        values.put("capacity", capacity);
+
+        db.insert("events", null, values);
+    }
+
     @Override
     public void onResume() {   // when back to fragment refresh the list - needed when coming back from CreateEventActivity
         super.onResume();
         // check to see if adapter exists
         if (adapter != null) {
-            // get adapter to update/sort list by category
-            if (currentCategory.equals("All")) {
-                adapter.setEvents(dbHelper.getSortedEvents());
-            } else {
-                // get promoted events at the top
-                adapter.setEvents(dbHelper.getEventsByCategory(currentCategory));
-            }
+           getEvents(currentCategory);
         }
-
-        // notify list that it has been modified
-        adapter.notifyDataSetChanged();
     }
+
 }

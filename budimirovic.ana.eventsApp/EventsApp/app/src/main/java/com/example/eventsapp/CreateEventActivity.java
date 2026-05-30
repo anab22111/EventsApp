@@ -259,8 +259,4 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
         return imageRes;
      }
-
-
-
-
 }

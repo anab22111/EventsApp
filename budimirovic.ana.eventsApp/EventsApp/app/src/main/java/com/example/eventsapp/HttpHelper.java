@@ -2,6 +2,7 @@ package com.example.eventsapp;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -102,6 +103,39 @@ public class HttpHelper {
 
         urlConnection.disconnect();
         return responseObj;
+    }
+
+    public JSONArray getJSONArrayFromUrl(String urlString) throws IOException, JSONException {
+        HttpURLConnection urlConnection = null;
+        java.net.URL url = new URL(urlString);
+        urlConnection = (HttpURLConnection) url.openConnection();
+
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Accept", "application/json");
+        urlConnection.setReadTimeout(10000);
+        urlConnection.setConnectTimeout(15000);
+
+        try {
+            urlConnection.connect();
+        } catch (IOException e) {
+            return null;
+        }
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        br.close();
+
+        String jsonString = sb.toString();
+        Log.d("HTTP GET ARRAY", "JSON Array- " + jsonString);
+
+        int responseCode = urlConnection.getResponseCode();
+        urlConnection.disconnect();
+
+        return responseCode == SUCCESS ? new JSONArray(jsonString) : null;
     }
 
 }
