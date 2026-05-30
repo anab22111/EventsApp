@@ -2,6 +2,7 @@ package com.example.eventsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -10,12 +11,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class EventDetailsActivity extends AppCompatActivity implements View.OnClickListener{
     private TextView tvName, tvCategory, tvDescription, tvLocation, tvDateTime, tvRating, tvFreeSeats;
     private Button btnInterested, btnAttending;
     private ImageView image;
     private String username;
     private dbHelper helper;
+    private String eventName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +29,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
 
         Bundle bundle = getIntent().getExtras();
 
-        String eventName = bundle.getString("nameOfEvent");
+        eventName = bundle.getString("nameOfEvent");
         username = bundle.getString("username");
 
         // get event form database
@@ -61,7 +66,6 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             tvRating.setText("Rating :" + ratingStr);
         }
 
-
         tvDateTime.setText(event.getDateTime());
 
         // get correct image for the category
@@ -97,7 +101,23 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         int attendees = event.getNumberOfAttendees();
         int freeSeats = capacity - attendees;
 
+        String eventId = getServerEventId(eventName);
+        String userId = getServerUserId(username);
+
         if(view.getId() == R.id.btnInterested){
+
+            // send POST request at /attendance - commitment = ZAINTERESOVAN
+
+            // create json for server
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("userId", userId);
+                jsonObject.put("eventId", eventId);
+                jsonObject.put("commitment", "ZAINTERESOVAN");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
 
             // check if user is already interested for clickedEventName
             boolean exists = helper.checkIfAttendanceExists(username, clickedEventName, "INTERESTED");
@@ -156,7 +176,36 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    public int getImageRes(String category){
+    private String getServerEventId(String name){
+        // get local database
+        SQLiteDatabase db = helper.getReadableDatabase();
+        // make cursor to get event id from table
+        Cursor cursor = db.rawQuery("SELECT server_id FROM events WHERE name = ?", new String[]{name});
+
+        String serverId = "";
+        if(cursor.moveToFirst()){
+            serverId = cursor.getString(cursor.getColumnIndexOrThrow("server_id"));
+        }
+
+        return serverId;
+    }
+
+    private String getServerUserId(String name){
+        // get local database
+        SQLiteDatabase db = helper.getReadableDatabase();
+        // make cursor to get event id from table
+        Cursor cursor = db.rawQuery("SELECT server_id FROM users WHERE name = ?", new String[]{name});
+
+        String serverId = "";
+        if(cursor.moveToFirst()){
+            serverId = cursor.getString(cursor.getColumnIndexOrThrow("server_id"));
+        }
+
+        return serverId;
+
+    }
+
+    private int getImageRes(String category){
         int imageRes = 0;
         if(category.equals("Marathon")){
             imageRes = R.drawable.marathon;
