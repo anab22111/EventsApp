@@ -54,12 +54,12 @@ public class HttpHelper {
         return responseCode == SUCCESS ? new JSONObject(jsonString) : null;
     }
 
-    public JSONObject postJSONObjectFromURL(String urlString, JSONObject jsonObject) throws IOException, JSONException {
+    public JSONObject postJSONObjectFromURL(String urlString, JSONObject jsonObject, String requestMethod) throws IOException, JSONException {
         HttpURLConnection urlConnection = null;
         java.net.URL url = new URL(urlString);
         urlConnection = (HttpURLConnection) url.openConnection();
 
-        urlConnection.setRequestMethod("POST");
+        urlConnection.setRequestMethod(requestMethod);
         urlConnection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
         urlConnection.setRequestProperty("Accept", "application/json");
 
@@ -68,7 +68,6 @@ public class HttpHelper {
         urlConnection.setDoInput(true);
 
         urlConnection.connect();
-
 
         DataOutputStream os = new DataOutputStream(urlConnection.getOutputStream());
         /* write json object */
@@ -83,7 +82,7 @@ public class HttpHelper {
         JSONObject responseObj = null;
         BufferedReader br;
 
-        if(responseCode == SUCCESS){
+        if(responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED){
             br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
         }else{
             br = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));

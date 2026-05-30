@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this, "Please enter a valid email address.", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 // if email is in valid format try to register user
                 // create JSON to send
                 JSONObject data  = new JSONObject();
@@ -144,13 +145,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override public void run() {
                         // code to run in background thread
                         String url = "http://192.168.0.7:3000/users";    // url for users table - computer ip address:port/table
+                        //String url = "http://10.0.2.2:3000/password";
 
                         JSONObject serverResponse = null;
                         String errorText = null;
 
                         // try to register user on server
                         try {
-                            serverResponse = httpHelper.postJSONObjectFromURL(url, data);
+                            serverResponse = httpHelper.postJSONObjectFromURL(url, data, "POST");
                         } catch (IOException e) {
                             e.printStackTrace();    // if there is no internet or server is off
                             errorText = "Server unreachable.";
@@ -180,12 +182,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                     if(statusCode == 200){                  // user is registered successfully
 
-                                        String hashedPassword = PasswordHasher.hashPassword(password);
+                                        String hashPassword = PasswordHasher.hashPassword(password);
 
                                         // get id from servers response
                                         String serverId = response.optString("_id", "");
 
-                                        long result = registerUser(username, hashedPassword, email, serverId);
+                                        long result = registerUser(username, hashPassword, email, serverId);
 
                                         if (result != -1) {
                                             Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
@@ -238,13 +240,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 // url for users login /login
                 String url = "http://192.168.0.7:3000/login";
+//                String url = "http://10.0.2.2:3000/password";
 
                 JSONObject serverResponse = null;
                 String errorText = null;
 
                 // check if user exists and if password is correct
                 try {
-                    serverResponse = httpHelper.postJSONObjectFromURL(url, loginData);
+                    serverResponse = httpHelper.postJSONObjectFromURL(url, loginData, "POST");
                 } catch (IOException e) {
                     e.printStackTrace();    // if there is no internet or server is off
                     errorText = "Server unreachable.";
@@ -263,12 +266,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void run() {
 
+                        // check if there was an error with the server
                         if (finalErrorText != null) {
                             Toast.makeText(MainActivity.this, finalErrorText, Toast.LENGTH_LONG).show();
-                            return;
+                            return;        // print error and exit
                         }
 
-                        if(response != null){
+                        if(response != null){         // if there is a response form server
                             // get status code
                             int statusCode = response.optInt("http_status_code",0);
                             if(statusCode == 200){          // valid username and password
