@@ -284,6 +284,23 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
                     errorText = "Error " + e.getMessage();
                 }
 
+                // make new list to store events by promotion
+                ArrayList<Event> sortedEvents = new ArrayList<>();
+
+                // add promoted events first
+                for (Event e : serverEvents) {
+                    if (e.isPromoted()) {
+                        sortedEvents.add(e);
+                    }
+                }
+
+               // then add regular events
+                for (Event e : serverEvents) {
+                    if (!e.isPromoted()) {
+                        sortedEvents.add(e);
+                    }
+                }
+                serverEvents = sortedEvents;
 
                 // update ui when finished
                 final ArrayList<Event> finalReadyList = serverEvents;

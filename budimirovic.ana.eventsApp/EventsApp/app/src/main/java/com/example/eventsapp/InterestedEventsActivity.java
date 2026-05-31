@@ -120,6 +120,24 @@ public class InterestedEventsActivity extends AppCompatActivity implements Adapt
                     errorText = "Data parsing error: " + e.getMessage();
                 }
 
+                // make new list to store events by promotion
+                ArrayList<Event> sortedEvents = new ArrayList<>();
+
+                // add promoted events first
+                for (Event e : serverEvents) {
+                    if (e.isPromoted()) {
+                        sortedEvents.add(e);
+                    }
+                }
+
+                // then add regular events
+                for (Event e : serverEvents) {
+                    if (!e.isPromoted()) {
+                        sortedEvents.add(e);
+                    }
+                }
+                serverEvents = sortedEvents;
+
                 // update UI
                 final ArrayList<Event> finalEvents = serverEvents;
                 final String finalErrorText = errorText;
@@ -139,9 +157,7 @@ public class InterestedEventsActivity extends AppCompatActivity implements Adapt
             }
         });
         thread.start();
-
     }
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // create intent
