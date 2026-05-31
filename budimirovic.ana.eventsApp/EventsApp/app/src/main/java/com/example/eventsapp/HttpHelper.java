@@ -65,7 +65,7 @@ public class HttpHelper {
         urlConnection.setRequestProperty("Accept", "application/json");
 
         /* needed when used POST or PUT methods */
-        urlConnection.setDoOutput(true);
+        urlConnection.setDoOutput(true);      // allows sending body of the message
         urlConnection.setDoInput(true);
 
         urlConnection.connect();

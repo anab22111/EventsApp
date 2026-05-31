@@ -230,7 +230,13 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
                 if(!category.equals("All")){    // if category isn't ALL make new url
                     try {
-                        url = "http://192.168.0.7:3000/events/" + java.net.URLEncoder.encode(category, "UTF-8");  // encode bc category Theater & StandUp has spaces and &
+                        String encodedCategory = java.net.URLEncoder.encode(category, "UTF-8");
+
+                        //replace "+" with "%20" bc Node.js server sometimes doesn't recognize "+" as space
+                        encodedCategory = encodedCategory.replace("+", "%20");
+
+                        url = "http://192.168.0.7:3000/events/" + encodedCategory;
+                        //url = "http://192.168.0.7:3000/events/" + java.net.URLEncoder.encode(category, "UTF-8");  // encode bc category Theater & StandUp has spaces and &
                     } catch (java.io.UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
