@@ -50,4 +50,5 @@
     <string name="rateEvent">Rate event</string>
     <string name="confirmRt">Confirm rating</string>
     <string name="Admin">Admin</string>
+    <string name="friendsAct">Friends Activity</string>
 </resources>

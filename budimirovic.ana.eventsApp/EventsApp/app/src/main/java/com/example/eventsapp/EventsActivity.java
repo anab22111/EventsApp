@@ -2,6 +2,7 @@ package com.example.eventsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -45,6 +46,7 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
 
         btnEvents.setOnClickListener(this);
         btnMyEvents.setOnClickListener(this);
+        btnFriends.setOnClickListener(this);
     }
 
     @Override
@@ -81,6 +83,19 @@ public class EventsActivity extends AppCompatActivity implements View.OnClickLis
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContanier, myEventsFragment)
+                    .commit();
+        }else if(view.getId() == R.id.friends){
+
+            // prepare data to send to friends fragment
+            String username = tvUsername.getText().toString();
+            Bundle bundle = new Bundle();
+            bundle.putString("username", username);
+
+            FriendsFragment friendsFragment = new FriendsFragment();
+            friendsFragment.setArguments(bundle);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContanier, friendsFragment)
                     .commit();
         }
     }
