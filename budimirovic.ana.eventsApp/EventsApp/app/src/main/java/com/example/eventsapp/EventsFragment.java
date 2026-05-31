@@ -271,6 +271,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
                                 event = EventFactory.createRegularEvent(name,description,location,eventTime,category, imageRes);
                             }
                             serverEvents.add(event);           // add to list of events
+                            event.setNumberOfAttendees(numberOfAttendees);
 
                             updateLocalDatabase(name,description,location,eventTime,category, imageRes ,capacity, isPromoted, id, numberOfAttendees);
 
