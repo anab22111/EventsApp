@@ -80,8 +80,6 @@ public class InterestedEventsActivity extends AppCompatActivity implements Adapt
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject attendanceObj = jsonArray.getJSONObject(i);  // get JSONObject
 
-                            android.util.Log.d("SERVER_RESPONSE_ITEM", "Objekat na indeksu " + i + ": " + attendanceObj.toString());
-
                             // server returns object that has fields .commitment and .event
                             String commitment = attendanceObj.getString("commitment");
 
@@ -119,7 +117,6 @@ public class InterestedEventsActivity extends AppCompatActivity implements Adapt
                     errorText = "Server unreachable. Loading from local database...";
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    errorText = "Data parsing error.";
                     errorText = "Data parsing error: " + e.getMessage();
                 }
 
