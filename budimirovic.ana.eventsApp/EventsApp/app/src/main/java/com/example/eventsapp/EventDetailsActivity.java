@@ -2,6 +2,7 @@ package com.example.eventsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class EventDetailsActivity extends AppCompatActivity implements View.OnClickListener{
     private TextView tvName, tvCategory, tvDescription, tvLocation, tvDateTime, tvRating, tvFreeSeats;
@@ -90,90 +93,143 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
+
         // get event name from tag
         String clickedEventName = view.getTag().toString();
         Event event =  helper.getEventByName(clickedEventName);
 
         if (event == null) return;
 
-        // get FreeSeats for event
-        int capacity = event.getCapacity();
-        int attendees = event.getNumberOfAttendees();
-        int freeSeats = capacity - attendees;
-
-        String eventId = getServerEventId(eventName);
+        String eventId = getServerEventId(clickedEventName);
         String userId = getServerUserId(username);
 
-        if(view.getId() == R.id.btnInterested){
+        String commitment = "";    // for serer commitment
+        String localStatus = "";    // for local database commitment
 
-            // send POST request at /attendance - commitment = ZAINTERESOVAN
-
-            // create json for server
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("userId", userId);
-                jsonObject.put("eventId", eventId);
-                jsonObject.put("commitment", "ZAINTERESOVAN");
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-
-
-            // check if user is already interested for clickedEventName
-            boolean exists = helper.checkIfAttendanceExists(username, clickedEventName, "INTERESTED");
-            
-            if(exists){     // user already interested
+        // check local database to see if button was already clicked and user is already interested/attending
+        // if commitment stays the same no need to sen request to server
+        if (view.getId() == R.id.btnInterested) {
+            if (helper.checkIfAttendanceExists(username, clickedEventName, "INTERESTED")) {
                 Toast.makeText(this, "Already in interested list.", Toast.LENGTH_SHORT).show();
-            }else{        // add event to interested
-
-                // check if previous commitment was ATTENDING
-                boolean wasAttending = helper.checkIfAttendanceExists(username, clickedEventName, "ATTENDING");
-
-                // try to insert attendance
-                boolean success = helper.insertAttendance(username, clickedEventName, "INTERESTED");
-                if (success) {
-                    // if true, status changed to interested
-                    Toast.makeText(this, "Added to interested.", Toast.LENGTH_SHORT).show();
-
-                    // update appearance
-                    if (wasAttending && event.isPromoted()) {
-                        int newFreeSeats = freeSeats + 1;
-                        tvFreeSeats.setText("Free seats: " + newFreeSeats + "/" + capacity);
-                    }
-
-                } else {
-                    Toast.makeText(this, "Error updating database.", Toast.LENGTH_SHORT).show();
-                }
+                return;
             }
-
-        }else if(view.getId() == R.id.btnAttending){
-
-            // check if user is already interested for clickedEventName
-            boolean exists = helper.checkIfAttendanceExists(username, clickedEventName, "ATTENDING");
-
-            if(exists){     // user already attending
+            // change commitments
+            commitment = "ZAINTERESOVAN";
+            localStatus = "INTERESTED";
+        } else if (view.getId() == R.id.btnAttending) {
+            if (helper.checkIfAttendanceExists(username, clickedEventName, "ATTENDING")) {
                 Toast.makeText(this, "You have already registered for the event.", Toast.LENGTH_SHORT).show();
-            }else{        // add event to interested
-
-                // check if there are any free seats left
-                if (event.isPromoted() && freeSeats <= 0) {                   // if event is promoted and there are no free seats don't insert new attendance and notify user
-                    Toast.makeText(this, "Unfortunately, there are no free seats left.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // try to insert attendance
-                boolean success = helper.insertAttendance(username, clickedEventName, "ATTENDING");
-                if (success) {
-                    Toast.makeText(this, "You have registered for the event.", Toast.LENGTH_SHORT).show();
-
-                    // update free seats
-                    tvFreeSeats.setText("Free seats: " + (freeSeats - 1)+"/" + event.getCapacity());
-
-                } else {
-                    Toast.makeText(this, "Error updating database.", Toast.LENGTH_SHORT).show();
-                }
+                return;
             }
+            // change commitments
+            commitment = "PRISUSTVUJE";
+            localStatus = "ATTENDING";
         }
+
+        // check previous state
+        final boolean wasAttending = helper.checkIfAttendanceExists(username, clickedEventName, "ATTENDING");
+
+        // make json for server
+        JSONObject jsonData = new JSONObject();
+        try {
+            jsonData.put("userId", userId);
+            jsonData.put("eventId", eventId);
+            jsonData.put("commitment", commitment);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final String finalCommitment = commitment;
+        final String finalLocalStatus = localStatus;
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                HttpHelper httpHelper = new HttpHelper();
+                String url = "http://192.168.0.7:3000/attendance";
+
+                JSONObject serverResponse = null;
+                String errorText = null;
+
+                try {
+                    serverResponse = httpHelper.postJSONObjectFromURL(url, jsonData, "POST");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    errorText = "Server unreachable.";
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    errorText = "Server didn't return valid JSON.";
+                }
+
+                final JSONObject response = serverResponse;
+                final String finalErrorText = errorText;
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (finalErrorText != null) {
+                            Toast.makeText(EventDetailsActivity.this, finalErrorText, Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        // server responded
+                        if(response != null){
+                            android.util.Log.d("SERVER_RESPONSE", response.toString());
+
+                            // get status code
+                            int statusCode = response.optInt("http_status_code", 200);
+
+                            if(statusCode == 200 || statusCode == 201){    // success changing commitment
+
+                                Toast.makeText(EventDetailsActivity.this, "Added to " + finalLocalStatus, Toast.LENGTH_SHORT).show();
+
+                                // need to update local database - table attendance
+                                // table events will be updated automatically when user returns to events fragment - updated number of attendees
+
+                                // try to insert attendance
+                                boolean success = helper.insertAttendance(username, clickedEventName, finalLocalStatus);
+                                if (success) {                 // if changing commitment was successful
+
+                                    // check if event is promoted to update seats
+                                    if(event.isPromoted()){     // update gui
+
+                                        // get previous number of attendees for event
+                                        int attendees = event.getNumberOfAttendees();
+
+                                        if (finalLocalStatus.equals("ATTENDING") && !wasAttending) {
+                                            // user wants to attend
+                                            attendees++;
+                                        } else if (finalLocalStatus.equals("INTERESTED") && wasAttending) {
+                                            // user interested but was Attending before
+                                            attendees--;
+                                        }
+                                        int currentFreeSeats = event.getCapacity() - attendees;
+                                        // update screen
+                                        tvFreeSeats.setText("Free seats: " + currentFreeSeats + "/" + event.getCapacity());
+
+                                        // update local event so that ui can function correct i user changes his mind
+                                        event.setNumberOfAttendees(attendees);
+
+                                        // update local database
+                                        ContentValues cv = new ContentValues();
+                                        cv.put("numberOfAttendees", attendees);
+                                        helper.getWritableDatabase().update("events", cv, "name = ?", new String[]{clickedEventName});
+                                    }
+                                } else {
+                                    Toast.makeText(EventDetailsActivity.this, "Error updating database.", Toast.LENGTH_SHORT).show();
+                                }
+                            }else{
+                                String errorMessage = response.optString("message");
+                                Toast.makeText(EventDetailsActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        thread.start();
     }
 
     private String getServerEventId(String name){
@@ -187,6 +243,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             serverId = cursor.getString(cursor.getColumnIndexOrThrow("server_id"));
         }
 
+        cursor.close();
         return serverId;
     }
 
@@ -194,13 +251,14 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         // get local database
         SQLiteDatabase db = helper.getReadableDatabase();
         // make cursor to get event id from table
-        Cursor cursor = db.rawQuery("SELECT server_id FROM users WHERE name = ?", new String[]{name});
+        Cursor cursor = db.rawQuery("SELECT server_id FROM users WHERE username = ?", new String[]{name});
 
         String serverId = "";
         if(cursor.moveToFirst()){
             serverId = cursor.getString(cursor.getColumnIndexOrThrow("server_id"));
         }
 
+        cursor.close();
         return serverId;
 
     }

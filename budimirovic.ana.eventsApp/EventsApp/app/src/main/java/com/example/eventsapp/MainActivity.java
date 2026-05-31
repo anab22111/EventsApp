@@ -280,6 +280,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                 // get user object from response
                                 boolean isAdminServer = response.optBoolean("isAdmin");
+                                String serverId = response.optString("_id", ""); // get id
+                                String serverEmail = response.optString("email");
+
+                                // check if user is in local database
+                                Cursor cursor = db.rawQuery("SELECT * FROM users WHERE username = ?", new String[]{username});
+
+                                if(cursor.moveToFirst()) {
+                                    // user exists in local database update server id just in case
+                                    ContentValues cv = new ContentValues();
+                                    cv.put("server_id", serverId);
+                                    db.update("users", cv, "username = ?", new String[]{username});
+                                } else {
+                                    // user doesn't exist in local database
+                                    // add to local db
+                                    ContentValues values = new ContentValues();
+                                    values.put("username", username);
+                                    values.put("email", serverEmail);
+                                    values.put("password", "on server");
+                                    values.put("server_id", serverId);
+                                    values.put("admin", isAdminServer ? 1 : 0);
+                                    db.insert("users", null, values);
+                                }
+                                cursor.close();
 
                                 goToNextActivity(username, isAdminServer);     // go to next Activity
 

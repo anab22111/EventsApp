@@ -246,7 +246,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
                     if(JSONevents != null){     // check if server returned events
 
                         // delete all events from local database so it's not duplicated
-                        dbHelper.getWritableDatabase().delete("events", null, null);
+                        //dbHelper.getWritableDatabase().delete("events", null, null);
 
                         // go through all elements of JSONArray
                         for(int i = 0; i < JSONevents.length(); i++){
@@ -261,6 +261,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
                             String id = JSONEvent.getString("_id");
                             int capacity = JSONEvent.optInt("capacity", 0);
                             int imageRes = getImageRes(category);
+                            int numberOfAttendees = JSONEvent.optInt("numberOfAttendees");
 
                             Event event;
                             // if promoted make promoted event, otherwise make regular event
@@ -271,7 +272,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
                             }
                             serverEvents.add(event);           // add to list of events
 
-                            updateLocalDatabase(name,description,location,eventTime,category, imageRes ,capacity, isPromoted);
+                            updateLocalDatabase(name,description,location,eventTime,category, imageRes ,capacity, isPromoted, id, numberOfAttendees);
 
                         }
                     }
@@ -329,7 +330,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
         return imageRes;
     }
 
-    private void updateLocalDatabase(String name,String description, String location,String eventTime,String category,int imageRes ,int capacity, boolean isPromoted){
+    private void updateLocalDatabase(String name,String description, String location,String eventTime,String category,int imageRes ,int capacity, boolean isPromoted, String id, int numberOfAttendees){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         int promoted;
@@ -338,14 +339,26 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
 
         android.content.ContentValues values = new android.content.ContentValues();
         values.put("name", name);
+        values.put("server_id", id);
         values.put("description", description);
         values.put("location", location);
         values.put("dateTime", eventTime);
         values.put("category", category);
         values.put("promoted",  promoted);
         values.put("capacity", capacity);
+        values.put("numberOfAttendees", numberOfAttendees);
 
-        db.insert("events", null, values);
+        //check if event exists in local db
+        Cursor cursor = db.rawQuery("SELECT * FROM events WHERE name = ?", new String[]{name});
+
+        if (cursor.moveToFirst()) {
+            // if event exist update it
+            db.update("events", values, "name = ?", new String[]{name});
+        } else {
+            // if not insert event
+            db.insert("events", null, values);
+        }
+        cursor.close();
     }
 
     @Override
