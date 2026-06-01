@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Thread thread = new Thread(new Runnable() {
                     @Override public void run() {
                         // code to run in background thread
-                        String url = "http://192.168.0.7:3000/users";    // url for users table - computer ip address:port/table
+                        String url = "http://10.194.239.97:3000/users";    // url for users table - computer ip address:port/table
                         //String url = "http://10.0.2.2:3000/password";
 
                         JSONObject serverResponse = null;
@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void run() {
                 // url for users login /login
-                String url = "http://192.168.0.7:3000/login";
+                String url = "http://10.194.239.97:3000/login";
 //                String url = "http://10.0.2.2:3000/login";
 
                 JSONObject serverResponse = null;

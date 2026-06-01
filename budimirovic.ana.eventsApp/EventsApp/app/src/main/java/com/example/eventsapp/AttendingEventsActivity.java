@@ -66,7 +66,7 @@ public class AttendingEventsActivity extends AppCompatActivity implements View.O
             public void run() {
                 HttpHelper httpHelper = new HttpHelper();
                 // make url for users event
-                String url = "http://192.168.0.7:3000/attendance/" + userId;
+                String url = "http://10.194.239.97:3000/attendance/" + userId;
 
                 String errorText = null;
                 ArrayList<Event> serverEvents = new ArrayList<>();   // make list to store events

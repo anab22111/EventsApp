@@ -224,7 +224,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             @Override
             public void run() {
 
-                String originalUrl = "http://192.168.0.7:3000/events";    // url for events table - computer ip address:port/events
+                String originalUrl = "http://10.194.239.97:3000/events";    // url for events table - computer ip address:port/events
                 String url = originalUrl;
                 //String url = "http://10.0.2.2:3000/events";
 

@@ -155,7 +155,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    String url = "http://192.168.0.7:3000/events";
+                    String url = "http://10.194.239.97:3000/events";
 //                  String url = "http://10.0.2.2:3000/events";
 
                     HttpHelper httpHelper = new HttpHelper();   // get http helper

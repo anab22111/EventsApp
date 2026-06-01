@@ -72,7 +72,7 @@ public class FriendsFragment extends Fragment {
             public void run() {
 
                 HttpHelper httpHelper = new HttpHelper();
-                String url = "http://192.168.0.7:3000/friends-activity/" + userId;
+                String url = "http://10.194.239.97:3000/friends-activity/" + userId;
 
                 try {
                     // send request
