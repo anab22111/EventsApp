@@ -2,11 +2,18 @@ package com.example.eventsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,8 +33,54 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
     private dbHelper helper;
     private String eventName;
     private long expTime;
+    private boolean isAttending = false;
 
     private boolean isLatestSpecial = false;
+
+    private counterBinder mServiceBinder; // interface form AIDL
+    private boolean isBound = false;      // to check connection with service
+    private Handler handler = new Handler(android.os.Looper.getMainLooper());
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mServiceBinder = counterBinder.Stub.asInterface(service);
+            isBound = true;
+            handler.post(countdownChecker);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isBound = false;
+            mServiceBinder = null;
+            handler.removeCallbacks(countdownChecker);
+        }
+    };
+
+    private Runnable countdownChecker = new Runnable() {
+        @Override
+        public void run() {
+            if (isBound && mServiceBinder != null) {
+                try {
+                    int secondsLeft = mServiceBinder.getValue();
+                    long now = System.currentTimeMillis();
+
+                    if (secondsLeft <= 0 && now > expTime) {
+                        btnAttending.setEnabled(false);
+                        handler.removeCallbacks(this);
+                        if(!isAttending){
+                            Toast.makeText(EventDetailsActivity.this, "Unfortunately, registration for this event just expired!", Toast.LENGTH_SHORT).show();
+                        }
+                        return;
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+            handler.postDelayed(this, 500);
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +158,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             // if it's not or if it is and the time for registration expired disable button attending
             if(!thisEventServerId.equals(latestSpecialId) || now > expTime){
                 btnAttending.setEnabled(false);
+                Toast.makeText(this, "Unfortunately, registration for this event expired!", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -112,6 +166,10 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             isLatestSpecial = true;
         }
 
+        if (isLatestSpecial) {   // if event is latest special bind to service
+            Intent serviceIntent = new Intent(this, Service24h.class);
+            bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+        }
         btnInterested.setTag(event.getName());  // set Tags so that the event is transferred to onClick()
         btnAttending.setTag(event.getName());
         btnInterested.setOnClickListener(this);
@@ -144,15 +202,9 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             // change commitments
             commitment = "ZAINTERESOVAN";
             localStatus = "INTERESTED";
+            isAttending = false;
         } else if (view.getId() == R.id.btnAttending) {
-
-            long now = System.currentTimeMillis();
-            if (isLatestSpecial && now > expTime){
-                // don't let attending
-                Toast.makeText(this, "Can't attend. Time for registration expired!", Toast.LENGTH_SHORT).show();
-                btnAttending.setEnabled(false);
-                return;
-            }
+            isAttending = true;
 
             if (helper.checkIfAttendanceExists(username, clickedEventName, "ATTENDING")) {
                 Toast.makeText(this, "You have already registered for the event.", Toast.LENGTH_SHORT).show();
@@ -300,6 +352,8 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
 
     }
 
+
+
     private int getImageRes(String category){
         int imageRes = 0;
         if(category.equals("Marathon")){
@@ -323,5 +377,14 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         }
 
         return imageRes;
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isBound) {
+            unbindService(serviceConnection);
+            isBound = false;
+        }
+        handler.removeCallbacks(countdownChecker);
     }
 }

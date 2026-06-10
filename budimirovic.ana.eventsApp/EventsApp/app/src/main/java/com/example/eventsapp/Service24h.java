@@ -39,7 +39,7 @@ public class Service24h extends Service {
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent intent) {   // activates when activity calls method bindService()
         if(mBinder == null){
             // make binder
             mBinder = new counterBinderClass();
@@ -67,7 +67,7 @@ public class Service24h extends Service {
             @Override
             public void run() {
                 // set time for one cycle
-                long durationOfOneCycle = 60 * 1000;    // 60 in testing = 24 h in real time
+                long durationOfOneCycle = 180 * 1000;    // 60 in testing = 24 h in real time
                 while(true){
                     long startTime = System.currentTimeMillis();    // get start time of cycle
 
@@ -186,11 +186,15 @@ public class Service24h extends Service {
     }
 
     private String createSpecialEvent(){
+        String[] types = {"Festival Fusion", "Launch Party", "Architecture Exhibition", "Ariana Grande Concert", "High-school comedy show"};
+        String baseName = types[specEventVersion % types.length];
+        String name = baseName + " #" + specEventVersion;
+
 
         // send POST request to server
         // create json for server
-        String name = "SURPRISE Special event v" + specEventVersion ;
-        String description = "Come to a surprise special event!";
+        //String name = "SURPRISE Special event v" + specEventVersion ;
+        String description = "Come to the "+ specEventVersion + ". special event!";
         String location = "Spens, Novi Sad";
         String dateTime = "22.11.2026. 18:00";
         String category = "Special";
@@ -243,7 +247,6 @@ public class Service24h extends Service {
                 return "";
             }
 
-
             if (response != null) {
                 int statusCode = response.optInt("http_status_code", 0);
                 if (statusCode == 200) {
@@ -256,6 +259,7 @@ public class Service24h extends Service {
                     // add event name to sharedPreferences
                     SharedPreferences sp = getSharedPreferences("EventsAppPrefs", MODE_PRIVATE);
                     sp.edit().putString("current-special-event-id", serverId).apply();
+                    sp.edit().putString("last-special-event-name", name).apply();
 
                     return serverId;
                 }
@@ -291,7 +295,7 @@ public class Service24h extends Service {
         db.insert("events", null, values);
     }
 
-    private void createNotificationChannel(){
+    private void createNotificationChannel(){     // make notification channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(
                     channelId,
@@ -299,7 +303,6 @@ public class Service24h extends Service {
                     NotificationManager.IMPORTANCE_HIGH
             );
 
-            notificationChannel.enableLights(true); // turn on notification light
             notificationChannel.enableVibration(true); // allow vibration for notifications
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
