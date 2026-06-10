@@ -509,6 +509,9 @@ public class dbHelper extends SQLiteOpenHelper {
             imageRes = R.drawable.concert;
         }else if(category.equals("Party")) {
             imageRes = R.drawable.party;
+        }else if(category.equals("Special")){
+            imageRes = R.drawable.limited;
+
         }
 
         return imageRes;

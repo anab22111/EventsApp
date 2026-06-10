@@ -18,7 +18,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class InterestedEventsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -67,7 +66,7 @@ public class InterestedEventsActivity extends AppCompatActivity implements Adapt
             public void run() {
                 HttpHelper httpHelper = new HttpHelper();
                 // make url for users event
-                String url = "http://10.194.239.97:3000/attendance/" + userId;
+                String url = "/attendance/" + userId;
 
                 String errorText = null;
                 ArrayList<Event> serverEvents = new ArrayList<>();
@@ -206,6 +205,8 @@ public class InterestedEventsActivity extends AppCompatActivity implements Adapt
             imageRes = R.drawable.concert;
         }else if(category.equals("Party")) {
             imageRes = R.drawable.party;
+        }else if(category.equals("Special")){
+            imageRes = R.drawable.limited;
         }
 
         return imageRes;

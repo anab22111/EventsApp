@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -69,6 +72,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 isAdmin = false;
             }
         });
+
+        // ask user for permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                        new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1
+                );
+            }
+        }
 
     }
 
@@ -144,8 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Thread thread = new Thread(new Runnable() {
                     @Override public void run() {
                         // code to run in background thread
-                        String url = "http://10.194.239.97:3000/users";    // url for users table - computer ip address:port/table
-                        //String url = "http://10.0.2.2:3000/password";
+                        String url = "/users";    // url for users table - computer ip address:port/table
 
                         JSONObject serverResponse = null;
                         String errorText = null;
@@ -239,8 +251,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void run() {
                 // url for users login /login
-                String url = "http://10.194.239.97:3000/login";
-//                String url = "http://10.0.2.2:3000/login";
+                String url = "/login";
 
                 JSONObject serverResponse = null;
                 String errorText = null;
@@ -322,6 +333,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void goToNextActivity(String username, boolean isAdmin){
+        // make SharedPreferences so that username is saved - used in service24h
+        SharedPreferences sp = getSharedPreferences("EventsAppPrefs" , MODE_PRIVATE);
+        sp.edit().putString("username", username).apply();
+
+        // user logged in or registered therefore start service
+        Intent serviceIntent = new Intent(this, Service24h.class);
+        startService(serviceIntent);
+
         //intent for next activity
         Intent intent = new Intent(MainActivity.this,
                 EventsActivity.class);

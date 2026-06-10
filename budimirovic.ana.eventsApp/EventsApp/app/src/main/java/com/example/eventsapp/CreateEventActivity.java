@@ -155,8 +155,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    String url = "http://10.194.239.97:3000/events";
-//                  String url = "http://10.0.2.2:3000/events";
+                    String url = "/events";
 
                     HttpHelper httpHelper = new HttpHelper();   // get http helper
 
@@ -255,6 +254,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             imageRes = R.drawable.concert;
         }else if(category.equals("Party")){
             imageRes = R.drawable.party;
+        }else if(category.equals("Special")){
+            imageRes = R.drawable.limited;
         }
 
         return imageRes;

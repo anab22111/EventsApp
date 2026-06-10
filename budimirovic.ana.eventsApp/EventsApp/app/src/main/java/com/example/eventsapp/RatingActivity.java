@@ -89,7 +89,7 @@ public class RatingActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void run() {
                 HttpHelper httpHelper = new HttpHelper();
-                String url = "http://10.194.239.97:3000/ratings";
+                String url = "/ratings";
 
                 JSONObject serverResponse = null;
                 String errorText = null;

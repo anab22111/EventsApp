@@ -16,10 +16,12 @@ import java.net.URL;
 public class HttpHelper {
 
     private static final int SUCCESS = HttpURLConnection.HTTP_OK;
+    private static final String BASE_URL = "http://192.168.0.5:3000";
 
     public JSONObject getJSONObjectFromUrl(String urlString) throws IOException, JSONException{
         HttpURLConnection urlConnection = null;
-        java.net.URL url = new URL(urlString);
+        String completeUrl = HttpHelper.BASE_URL + urlString;
+        java.net.URL url = new URL(completeUrl);
         urlConnection = (HttpURLConnection) url.openConnection();
 
         // header fields
@@ -57,7 +59,8 @@ public class HttpHelper {
 
     public JSONObject postJSONObjectFromURL(String urlString, JSONObject jsonObject, String requestMethod) throws IOException, JSONException {
         HttpURLConnection urlConnection = null;
-        java.net.URL url = new URL(urlString);
+        String completeUrl = HttpHelper.BASE_URL + urlString;
+        java.net.URL url = new URL(completeUrl);
         urlConnection = (HttpURLConnection) url.openConnection();
 
         urlConnection.setRequestMethod(requestMethod);
@@ -107,7 +110,8 @@ public class HttpHelper {
 
     public JSONArray getJSONArrayFromUrl(String urlString) throws IOException, JSONException {
         HttpURLConnection urlConnection = null;
-        java.net.URL url = new URL(urlString);
+        String completeUrl = HttpHelper.BASE_URL + urlString;
+        java.net.URL url = new URL(completeUrl);
         urlConnection = (HttpURLConnection) url.openConnection();
 
         urlConnection.setRequestMethod("GET");

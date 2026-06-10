@@ -71,8 +71,7 @@ public class PasswordActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void run() {
                         // make url for /password path
-                        String url = "http://10.194.239.97:3000/password";
-                        //String url = "http://10.0.2.2:3000/password";
+                        String url = "/password";
                         JSONObject serverResponse = null;
                         String errorText = null;
 

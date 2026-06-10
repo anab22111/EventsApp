@@ -65,8 +65,8 @@ public class AttendingEventsActivity extends AppCompatActivity implements View.O
             @Override
             public void run() {
                 HttpHelper httpHelper = new HttpHelper();
-                // make url for users event
-                String url = "http://10.194.239.97:3000/attendance/" + userId;
+                // make url rute
+                String url = "/attendance/" + userId;
 
                 String errorText = null;
                 ArrayList<Event> serverEvents = new ArrayList<>();   // make list to store events
@@ -251,6 +251,8 @@ public class AttendingEventsActivity extends AppCompatActivity implements View.O
             imageRes = R.drawable.concert;
         }else if(category.equals("Party")) {
             imageRes = R.drawable.party;
+        }else if(category.equals("Special")) {
+            imageRes = R.drawable.limited;
         }
 
         return imageRes;

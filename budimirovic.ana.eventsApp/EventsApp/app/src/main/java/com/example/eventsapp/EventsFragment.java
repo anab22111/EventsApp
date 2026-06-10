@@ -224,9 +224,8 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             @Override
             public void run() {
 
-                String originalUrl = "http://10.194.239.97:3000/events";    // url for events table - computer ip address:port/events
+                String originalUrl = "/events";    // url for events table - computer ip address:port/events
                 String url = originalUrl;
-                //String url = "http://10.0.2.2:3000/events";
 
                 if(!category.equals("All")){    // if category isn't ALL make new url
                     try {
@@ -235,7 +234,7 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
                         //replace "+" with "%20" bc Node.js server sometimes doesn't recognize "+" as space
                         encodedCategory = encodedCategory.replace("+", "%20");
 
-                        url = "http://192.168.0.7:3000/events/" + encodedCategory;
+                        url = "/events/" + encodedCategory;
                         //url = "http://192.168.0.7:3000/events/" + java.net.URLEncoder.encode(category, "UTF-8");  // encode bc category Theater & StandUp has spaces and &
                     } catch (java.io.UnsupportedEncodingException e) {
                         e.printStackTrace();
@@ -349,6 +348,8 @@ public class EventsFragment extends Fragment implements AdapterView.OnItemClickL
             imageRes = R.drawable.concert;
         }else if(category.equals("Party")){
             imageRes = R.drawable.party;
+        }else if(category.equals("Special")){
+            imageRes = R.drawable.limited;
         }
 
         return imageRes;

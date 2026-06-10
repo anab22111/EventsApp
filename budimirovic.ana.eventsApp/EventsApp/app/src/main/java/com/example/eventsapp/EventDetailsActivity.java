@@ -3,6 +3,7 @@ package com.example.eventsapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -24,6 +25,9 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
     private String username;
     private dbHelper helper;
     private String eventName;
+    private long expTime;
+
+    private boolean isLatestSpecial = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,8 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         tvDescription.setText(event.getDescription());
         tvLocation.setText(event.getLocation());
 
+        btnAttending.setEnabled(true);
+
         if(event.getAverageRating() == 0){    // if there is no rating
             tvRating.setText("No rating yet");
         }else{        // else
@@ -82,6 +88,28 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             tvFreeSeats.setVisibility(View.VISIBLE);
         }else{
             tvFreeSeats.setVisibility(View.GONE);
+        }
+        // check if event is special event and if the 5 minutes/15 seconds expired
+        // get exp time from sharedPreferences and compare to current time
+        SharedPreferences sp = getSharedPreferences("EventsAppPrefs",  MODE_PRIVATE);
+        expTime = sp.getLong("exp-time", 0);
+        long now = System.currentTimeMillis();    // get current time
+
+        // get latest special event id and get id of event shown in event details
+        String latestSpecialId = sp.getString("current-special-event-id", "");
+        String thisEventServerId = getServerEventId(event.getName());
+
+        // check if event is special
+        if(event.getCategory().equals("Special")){
+            // if event is special check if it's the latest special event
+            // if it's not or if it is and the time for registration expired disable button attending
+            if(!thisEventServerId.equals(latestSpecialId) || now > expTime){
+                btnAttending.setEnabled(false);
+            }
+        }
+
+        if(thisEventServerId.equals(latestSpecialId)){
+            isLatestSpecial = true;
         }
 
         btnInterested.setTag(event.getName());  // set Tags so that the event is transferred to onClick()
@@ -117,6 +145,15 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             commitment = "ZAINTERESOVAN";
             localStatus = "INTERESTED";
         } else if (view.getId() == R.id.btnAttending) {
+
+            long now = System.currentTimeMillis();
+            if (isLatestSpecial && now > expTime){
+                // don't let attending
+                Toast.makeText(this, "Can't attend. Time for registration expired!", Toast.LENGTH_SHORT).show();
+                btnAttending.setEnabled(false);
+                return;
+            }
+
             if (helper.checkIfAttendanceExists(username, clickedEventName, "ATTENDING")) {
                 Toast.makeText(this, "You have already registered for the event.", Toast.LENGTH_SHORT).show();
                 return;
@@ -147,7 +184,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             public void run() {
 
                 HttpHelper httpHelper = new HttpHelper();
-                String url = "http://10.194.239.97:3000/attendance";
+                String url = "/attendance";
 
                 JSONObject serverResponse = null;
                 String errorText = null;
@@ -281,6 +318,8 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             imageRes = R.drawable.concert;
         }else if(category.equals("Party")) {
             imageRes = R.drawable.party;
+        }else if(category.equals("Special")) {
+            imageRes = R.drawable.limited;
         }
 
         return imageRes;
